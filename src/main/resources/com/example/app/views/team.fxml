@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<?import java.net.URL?>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.app.controllers.TeamController">
+    <stylesheets>
+        <URL value="@../styles/main.css"/>
+    </stylesheets>
+
+    <VBox spacing="10" styleClass="insets-medium">
+        <Label text="Команда" style="-fx-font-size: 24px; -fx-padding: 10"/>
+        <ListView fx:id="teamListView" prefHeight="200"/>
+        <Button text="Добавить участника"/>
+    </VBox>
+</AnchorPane>

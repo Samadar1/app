@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.app.controllers.MainViewController">
+    <stylesheets>
+        <URL value="@../styles/main.css"/>
+    </stylesheets>
+
+    <left>
+        <VBox styleClass="side-panel" prefWidth="200">
+            <Button text="Профиль" onAction="#switchToProfile"/>
+            <Button text="Настройки" onAction="#switchToSettings"/>
+            <Button text="Команда" onAction="#switchToTeam"/>
+            <Button text="Проекты" onAction="#switchToProjects"/>
+        </VBox>
+    </left>
+
+    <center>
+        <AnchorPane fx:id="contentArea" styleClass="content-area"/>
+    </center>
+</BorderPane>

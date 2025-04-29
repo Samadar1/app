@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<?import java.net.URL?>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.app.controllers.ProjectsController">
+    <stylesheets>
+        <URL value="@../styles/main.css"/>
+    </stylesheets>
+
+    <VBox spacing="10" styleClass="insets-medium">
+        <Label text="Проекты" style="-fx-font-size: 24px; -fx-padding: 10"/>
+        <TableView prefHeight="200">
+            <columns>
+                <TableColumn text="Название" prefWidth="200"/>
+                <TableColumn text="Статус" prefWidth="100"/>
+            </columns>
+        </TableView>
+        <Button text="Создать новый проект"/>
+    </VBox>
+</AnchorPane>

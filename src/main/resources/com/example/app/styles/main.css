@@ -1,0 +1,29 @@
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f0f0f0;
+}
+
+.side-panel {
+    -fx-background-color: #2d2d30;
+    -fx-padding: 10;
+}
+
+.side-panel > .button {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-color: transparent;
+}
+
+.side-panel > .button:hover {
+    -fx-background-color: #3c3c3c;
+}
+
+.content-area {
+    -fx-padding: 20;
+    -fx-background-color: white;
+}
+
+.insets-medium {
+    -fx-padding: 20;
+}
