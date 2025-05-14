@@ -9,13 +9,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import java.net.URL?>
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.app.controllers.AuthController"
-            fx:id="authPane"
+            fx:controller="com.example.app.controllers.RegisterController"
+            fx:id="registerPane"
             prefHeight="400"
             prefWidth="600"
             style="-fx-background-color: #f0f0f0;">
+
+    <stylesheets>
+        <URL value="@../styles/styles.css"/>
+    </stylesheets>
 
     <VBox alignment="CENTER"
           spacing="20"
@@ -26,43 +31,48 @@
           AnchorPane.rightAnchor="150">
 
         <!-- Заголовок -->
-        <Label text="Авторизация">
-            <font>
-                <Font name="System Bold" size="24"/>
-            </font>
-        </Label>
+        <Label text="Регистрация" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
         <!-- Форма -->
         <VBox alignment="CENTER_LEFT"
               spacing="10"
               style="-fx-padding: 20; -fx-background-color: white; -fx-background-radius: 10;">
 
-            <!-- Логин -->
-            <Label text="Логин / Email:"/>
-            <TextField fx:id="loginField"
-                       promptText="Введите логин или email"
+            <!-- Имя -->
+            <Label text="Имя:"
+                   styleClass="form-label"/>
+            <TextField fx:id="nameField"
+                       promptText="Введите имя"
+                       prefWidth="200"/>
+
+            <!-- Email -->
+            <Label text="Email:"
+                   styleClass="form-label"/>
+            <TextField fx:id="emailField"
+                       promptText="Введите email"
                        prefWidth="200"/>
 
             <!-- Пароль -->
-            <Label text="Пароль:"/>
+            <Label text="Пароль:"
+                   styleClass="form-label"/>
             <PasswordField fx:id="passwordField"
                            promptText="Введите пароль"
                            prefWidth="200"/>
 
-            <!-- Кнопка входа -->
-            <Button text="Войти"
-                    fx:id="loginButton"
-                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;"
-                    onAction="#handleLogin"
+            <!-- Кнопки -->
+            <Button text="Зарегистрироваться"
+                    fx:id="registerButton"
+                    styleClass="form-button"
+                    onAction="#handleRegister"
                     prefWidth="200"/>
 
-            <!-- Ссылка на регистрацию -->
-            <Button text="Нет аккаунта? Зарегистрироваться"
-                    fx:id="registerButton"
-                    style="-fx-background-color: transparent; -fx-text-fill: #2196F3; -fx-underline: true;"
-                    onAction="#handleRegister"/>
-
+            <Button text="Назад к входу"
+                    styleClass="link-button"
+                    onAction="#handleBackToLogin"/>
         </VBox>
+
     </VBox>
+
+
 
 </AnchorPane>

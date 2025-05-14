@@ -1,0 +1,33 @@
+.form-label {
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+}
+
+.form-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+}
+
+.form-button:hover {
+    -fx-background-color: #45a049;
+}
+
+.link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2196F3;
+    -fx-underline: true;
+    -fx-padding: 0;
+}
+
+.link-button:hover {
+    -fx-text-fill: #1976D2;
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
