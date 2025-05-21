@@ -8,13 +8,27 @@
             fx:controller="com.example.app.controllers.ProfileController">
     <stylesheets>
         <URL value="@../styles/main.css"/>
+        <URL value="@../styles/styles.css"/>
     </stylesheets>
 
-    <VBox spacing="10" styleClass="insets-medium">
-        <Label text="Профиль пользователя" style="-fx-font-size: 24px; -fx-padding: 10"/>
-        <TextField promptText="Имя"/>
-        <TextField promptText="Фамилия"/>
-        <TextField promptText="Email"/>
-        <Button text="Обновить профиль"/>
+    <VBox spacing="10" styleClass="insets-medium" alignment="CENTER">
+        <Label text="Профиль пользователя" styleClass="section-title"/>
+
+        <VBox styleClass="form-group">
+            <Label text="Имя:" styleClass="form-label"/>
+            <TextField promptText="Введите имя" styleClass="form-control"/>
+        </VBox>
+
+        <VBox styleClass="form-group">
+            <Label text="Фамилия:" styleClass="form-label"/>
+            <TextField promptText="Введите фамилию" styleClass="form-control"/>
+        </VBox>
+
+        <VBox styleClass="form-group">
+            <Label text="Email:" styleClass="form-label"/>
+            <TextField promptText="Введите email" styleClass="form-control"/>
+        </VBox>
+
+        <Button text="Обновить профиль" styleClass="form-button"/>
     </VBox>
 </AnchorPane>

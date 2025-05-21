@@ -8,16 +8,19 @@
             fx:controller="com.example.app.controllers.ProjectsController">
     <stylesheets>
         <URL value="@../styles/main.css"/>
+        <URL value="@../styles/styles.css"/>
     </stylesheets>
 
     <VBox spacing="10" styleClass="insets-medium">
-        <Label text="Проекты" style="-fx-font-size: 24px; -fx-padding: 10"/>
+        <Label text="Проекты" styleClass="section-title"/>
+
         <TableView prefHeight="200">
             <columns>
                 <TableColumn text="Название" prefWidth="200"/>
                 <TableColumn text="Статус" prefWidth="100"/>
             </columns>
         </TableView>
-        <Button text="Создать новый проект"/>
+
+        <Button text="Создать новый проект" styleClass="form-button"/>
     </VBox>
 </AnchorPane>

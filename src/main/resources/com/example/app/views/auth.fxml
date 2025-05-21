@@ -1,68 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
+<?import java.net.URL?>
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.app.controllers.AuthController"
             fx:id="authPane"
             prefHeight="400"
             prefWidth="600"
-            style="-fx-background-color: #f0f0f0;">
+            styleClass="root">
 
-    <VBox alignment="CENTER"
-          spacing="20"
-          prefWidth="300"
-          AnchorPane.topAnchor="50"
-          AnchorPane.bottomAnchor="50"
-          AnchorPane.leftAnchor="150"
-          AnchorPane.rightAnchor="150">
+    <stylesheets>
+        <URL value="@../styles/main.css"/>
+        <URL value="@../styles/styles.css"/>
+    </stylesheets>
+
+    <VBox alignment="CENTER" spacing="20" prefWidth="300"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          AnchorPane.leftAnchor="150" AnchorPane.rightAnchor="150">
 
         <!-- Заголовок -->
-        <Label text="Авторизация">
-            <font>
-                <Font name="System Bold" size="24"/>
-            </font>
-        </Label>
+        <Label text="Авторизация" styleClass="title-label"/>
 
         <!-- Форма -->
-        <VBox alignment="CENTER_LEFT"
-              spacing="10"
-              style="-fx-padding: 20; -fx-background-color: white; -fx-background-radius: 10;">
+        <VBox alignment="CENTER_LEFT" spacing="10" styleClass="auth-form-panel">
 
             <!-- Логин -->
             <Label text="Логин / Email:"/>
-            <TextField fx:id="loginField"
-                       promptText="Введите логин или email"
-                       prefWidth="200"/>
+            <TextField fx:id="loginField" promptText="Введите логин или email" prefWidth="200"/>
 
             <!-- Пароль -->
             <Label text="Пароль:"/>
-            <PasswordField fx:id="passwordField"
-                           promptText="Введите пароль"
-                           prefWidth="200"/>
+            <PasswordField fx:id="passwordField" promptText="Введите пароль" prefWidth="200"/>
 
             <!-- Кнопка входа -->
-            <Button text="Войти"
-                    fx:id="loginButton"
-                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;"
-                    onAction="#handleLogin"
-                    prefWidth="200"/>
+            <Button text="Войти" fx:id="loginButton" styleClass="form-button" onAction="#handleLogin" prefWidth="200"/>
 
             <!-- Ссылка на регистрацию -->
-            <Button text="Нет аккаунта? Зарегистрироваться"
-                    fx:id="registerButton"
-                    style="-fx-background-color: transparent; -fx-text-fill: #2196F3; -fx-underline: true;"
-                    onAction="#handleRegister"/>
-
+            <Button text="Нет аккаунта? Зарегистрироваться" fx:id="registerButton"
+                    styleClass="link-button" onAction="#handleRegister"/>
         </VBox>
     </VBox>
-
 </AnchorPane>

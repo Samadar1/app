@@ -7,12 +7,22 @@
             fx:controller="com.example.app.controllers.SettingsController">
     <stylesheets>
         <URL value="@../styles/main.css"/>
+        <URL value="@../styles/styles.css"/>
     </stylesheets>
 
     <VBox spacing="10" styleClass="insets-medium">
-        <Label text="Настройки" style="-fx-font-size: 24px; -fx-padding: 10"/>
-        <TextField promptText="Имя пользователя"/>
-        <PasswordField promptText="Пароль"/>
-        <Button text="Сохранить изменения"/>
+        <Label text="Настройки" styleClass="section-title"/>
+
+        <VBox styleClass="form-group">
+            <Label text="Имя пользователя:" styleClass="form-label"/>
+            <TextField promptText="Введите имя" styleClass="form-control"/>
+        </VBox>
+
+        <VBox styleClass="form-group">
+            <Label text="Пароль:" styleClass="form-label"/>
+            <PasswordField promptText="Введите пароль" styleClass="form-control"/>
+        </VBox>
+
+        <Button text="Сохранить изменения" styleClass="form-button"/>
     </VBox>
 </AnchorPane>

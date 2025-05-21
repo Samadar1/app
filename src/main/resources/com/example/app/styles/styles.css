@@ -31,3 +31,8 @@
     -fx-font-weight: bold;
     -fx-text-fill: #333333;
 }
+
+.button-group {
+    -fx-spacing: 10;
+    -fx-alignment: CENTER_RIGHT;
+}
