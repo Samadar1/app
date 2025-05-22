@@ -64,7 +64,7 @@ public class RegisterController {
                 );
 
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/auth/sign-up"))
+                        .uri(URI.create("http://localhost:8000/auth/sign-up"))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(json))
                         .build();
@@ -77,6 +77,7 @@ public class RegisterController {
                     System.out.println("Response Body: " + response.body());
                     throw new IOException("Registration failed: " + response.body());
                 }
+
                 return new ObjectMapper().readTree(response.body()).get("token").asText();
             }
         };
