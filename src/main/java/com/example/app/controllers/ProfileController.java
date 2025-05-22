@@ -25,7 +25,6 @@ public class ProfileController implements Initializable {
             int count = checkComboBox.getCheckModel().getCheckedItems().size();
             if (count == 0) {
                 checkComboBox.setTitle("Выберите значения из списка");
-                System.out.println(count);
             } else if (count <= 3) {
                 checkComboBox.setTitle(String.join(", ", checkComboBox.getCheckModel().getCheckedItems()));
             } else {
