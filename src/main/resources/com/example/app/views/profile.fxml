@@ -1,49 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import org.controlsfx.control.*?>
 
-
-<?import java.net.URL?>
-<?import org.controlsfx.control.CheckComboBox?>
-<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.app.controllers.ProfileController">
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.app.controllers.ProfileController">
     <stylesheets>
-        <URL value="@../styles/main.css"/>
-        <URL value="@../styles/styles.css"/>
+        <URL value="@../styles/main.css" />
+        <URL value="@../styles/styles.css" />
     </stylesheets>
 
-    <VBox spacing="10" styleClass="insets-medium" alignment="CENTER">
-        <Label text="Профиль пользователя" styleClass="section-title"/>
+    <VBox alignment="CENTER" spacing="10" styleClass="insets-medium">
+        <Label styleClass="section-title" text="Профиль пользователя" />
 
         <VBox styleClass="form-group">
-            <Label text="Имя:" styleClass="form-label"/>
-            <TextField promptText="Введите имя" styleClass="form-control"/>
-        </VBox>
-
-        <VBox styleClass="form-group">
-            <Label text="Фамилия:" styleClass="form-label"/>
-            <TextField promptText="Введите фамилию" styleClass="form-control"/>
+            <Label styleClass="form-label" text="Имя:" />
+            <TextField promptText="Введите имя" styleClass="form-control" />
         </VBox>
 
         <VBox styleClass="form-group">
-            <Label text="Email:" styleClass="form-label"/>
-            <TextField promptText="Введите email" styleClass="form-control"/>
+            <Label styleClass="form-label" text="Фамилия:" />
+            <TextField promptText="Введите фамилию" styleClass="form-control" />
         </VBox>
 
-        <VBox>
-            <Label text="Ваши навыки: " styleClass="form-label" />
-            <VBox styleClass="form-choose_wrapp">
-                <VBox styleClass="form-choose-variants">
-                    <VBox styleClass="form-choose-variants_inner">
-                        <VBox styleClass="form-choose-variants-checkbox">
-                            <CheckComboBox fx:id="checkComboBox" />
-                        </VBox>
-                    </VBox>
-                </VBox>
-            </VBox>
+        <VBox styleClass="form-group">
+            <Label styleClass="form-label" text="Email:" />
+            <TextField promptText="Введите email" styleClass="form-control" />
         </VBox>
 
-        <Button text="Обновить профиль" styleClass="form-button"/>
+        <VBox spacing="10">
+            <Label styleClass="form-label" text="Ваши навыки: " />
+            <CheckComboBox id="checkComboBox" fx:id="checkComboBox" title="Выберите значения из списка" />
+        </VBox>
+
+        <Button styleClass="form-button" text="Обновить профиль" />
     </VBox>
 </AnchorPane>
