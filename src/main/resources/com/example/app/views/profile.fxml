@@ -3,8 +3,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+
 <?import java.net.URL?>
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<?import org.controlsfx.control.CheckComboBox?>
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.app.controllers.ProfileController">
     <stylesheets>
         <URL value="@../styles/main.css"/>
@@ -27,6 +29,19 @@
         <VBox styleClass="form-group">
             <Label text="Email:" styleClass="form-label"/>
             <TextField promptText="Введите email" styleClass="form-control"/>
+        </VBox>
+
+        <VBox>
+            <Label text="Ваши навыки: " styleClass="form-label" />
+            <VBox styleClass="form-choose_wrapp">
+                <VBox styleClass="form-choose-variants">
+                    <VBox styleClass="form-choose-variants_inner">
+                        <VBox styleClass="form-choose-variants-checkbox">
+                            <CheckComboBox fx:id="checkComboBox" />
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </VBox>
         </VBox>
 
         <Button text="Обновить профиль" styleClass="form-button"/>
