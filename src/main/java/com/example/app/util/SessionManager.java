@@ -10,4 +10,8 @@ public class SessionManager {
     public static String getAuthToken() {
         return jwtToken;
     }
+
+    public static void removeAuthToken() {
+        jwtToken = null;
+    }
 }

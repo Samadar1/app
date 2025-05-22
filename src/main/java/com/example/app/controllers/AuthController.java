@@ -1,16 +1,14 @@
 package com.example.app.controllers;
 
 import com.example.app.util.SessionManager;
+import com.example.app.util.TextEncoderDecoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -21,6 +19,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class AuthController {
+    @FXML private CheckBox rememberMe;
     @FXML private TextField loginField;
     @FXML private PasswordField passwordField;
     @FXML private AnchorPane authPane;
@@ -64,7 +63,12 @@ public class AuthController {
                     System.out.println("Response Body: " + response.body());
                     throw new IOException("Login failed: " + response.body());
                 }
-                return new ObjectMapper().readTree(response.body()).get("token").asText();
+                String jwt = new ObjectMapper().readTree(response.body()).get("token").asText();
+
+                if (rememberMe.isSelected()){
+                    TextEncoderDecoder.encodeAndSave(jwt);
+                }
+                return jwt;
             }
         };
     }

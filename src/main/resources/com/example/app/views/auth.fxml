@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import java.net.URL?>
+<?import javafx.scene.control.CheckBox?>
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.app.controllers.AuthController"
@@ -45,6 +46,8 @@
             <!-- Ссылка на регистрацию -->
             <Button text="Нет аккаунта? Зарегистрироваться" fx:id="registerButton"
                     styleClass="link-button" onAction="#handleRegister"/>
+
+            <CheckBox text="Запомнить меня" fx:id="rememberMe"/>
         </VBox>
     </VBox>
 </AnchorPane>

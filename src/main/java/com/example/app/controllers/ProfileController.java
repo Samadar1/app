@@ -1,5 +1,6 @@
 package com.example.app.controllers;
 
+import com.example.app.util.SessionManager;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.Initializable;
@@ -31,8 +32,6 @@ public class ProfileController implements Initializable {
                 checkComboBox.setTitle("Выбрано элементов: " + count);
             }
         });
-
-
     }
 }
 
