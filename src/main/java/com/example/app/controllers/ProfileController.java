@@ -23,7 +23,10 @@ public class ProfileController implements Initializable {
         // Слушатель на изменение выбранных элементов
         checkComboBox.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) change -> {
             int count = checkComboBox.getCheckModel().getCheckedItems().size();
-            if (count <= 3) {
+            if (count == 0) {
+                checkComboBox.setTitle("Выберите значения из списка");
+                System.out.println(count);
+            } else if (count <= 3) {
                 checkComboBox.setTitle(String.join(", ", checkComboBox.getCheckModel().getCheckedItems()));
             } else {
                 checkComboBox.setTitle("Выбрано элементов: " + count);
