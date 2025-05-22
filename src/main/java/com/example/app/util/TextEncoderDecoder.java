@@ -13,6 +13,10 @@ public class TextEncoderDecoder {
     private static final String FILE_NAME = "data.txt";
     private static final Path FILE_PATH = Paths.get(APP_DATA_PATH, FILE_NAME);
 
+    public static Path getFilePath() {
+        return FILE_PATH;
+    }
+
     // Закодировать строку и сохранить в файл
     public static void encodeAndSave(String input) throws IOException {
         // Создаём директорию, если её нет
@@ -35,7 +39,6 @@ public class TextEncoderDecoder {
         try (BufferedReader reader = Files.newBufferedReader(FILE_PATH)) {
             encoded = reader.readLine();
         }
-
         byte[] decodedBytes = Base64.getDecoder().decode(encoded);
         return new String(decodedBytes);
     }
@@ -46,5 +49,17 @@ public class TextEncoderDecoder {
                 writer.write(""); // Очищаем содержимое
             }
         }
+    }
+
+    public static boolean is_empty() throws IOException {
+        String encoded;
+        try (BufferedReader reader = Files.newBufferedReader(FILE_PATH)) {
+            encoded = reader.readLine();
+        }
+        if (encoded == null || encoded.trim().isEmpty()) {
+            System.err.println("Файл пустой или не найден.");
+            return true;
+        }
+        return false;
     }
 }

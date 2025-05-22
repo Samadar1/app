@@ -57,7 +57,7 @@ public class AuthController {
 
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                if (response.statusCode() != 200) {
+                if (response.statusCode()   != 200) {
                     System.out.println("Request URL: " + request.uri());
                     System.out.println("Response Code: " + response.statusCode());
                     System.out.println("Response Body: " + response.body());
