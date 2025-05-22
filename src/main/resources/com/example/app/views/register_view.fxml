@@ -7,7 +7,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <?import java.net.URL?>
 <AnchorPane xmlns="http://javafx.com/javafx/17"
@@ -16,63 +15,40 @@
             fx:id="registerPane"
             prefHeight="400"
             prefWidth="600"
-            style="-fx-background-color: #f0f0f0;">
+            styleClass="root">
 
     <stylesheets>
+        <URL value="@../styles/main.css"/>
         <URL value="@../styles/styles.css"/>
     </stylesheets>
 
-    <VBox alignment="CENTER"
-          spacing="20"
-          prefWidth="300"
-          AnchorPane.topAnchor="50"
-          AnchorPane.bottomAnchor="50"
-          AnchorPane.leftAnchor="150"
-          AnchorPane.rightAnchor="150">
+    <VBox alignment="CENTER" spacing="20" prefWidth="300"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          AnchorPane.leftAnchor="150" AnchorPane.rightAnchor="150">
 
         <!-- Заголовок -->
-        <Label text="Регистрация" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Label text="Регистрация" styleClass="title-label"/>
 
         <!-- Форма -->
-        <VBox alignment="CENTER_LEFT"
-              spacing="10"
-              style="-fx-padding: 20; -fx-background-color: white; -fx-background-radius: 10;">
+        <VBox alignment="CENTER_LEFT" spacing="10" styleClass="auth-form-panel">
 
             <!-- Имя -->
-            <Label text="Имя:"
-                   styleClass="form-label"/>
-            <TextField fx:id="nameField"
-                       promptText="Введите имя"
-                       prefWidth="200"/>
+            <Label text="Имя:" styleClass="form-label"/>
+            <TextField fx:id="nameField" promptText="Введите имя" prefWidth="200"/>
 
             <!-- Email -->
-            <Label text="Email:"
-                   styleClass="form-label"/>
-            <TextField fx:id="emailField"
-                       promptText="Введите email"
-                       prefWidth="200"/>
+            <Label text="Email:" styleClass="form-label"/>
+            <TextField fx:id="emailField" promptText="Введите email" prefWidth="200"/>
 
             <!-- Пароль -->
-            <Label text="Пароль:"
-                   styleClass="form-label"/>
-            <PasswordField fx:id="passwordField"
-                           promptText="Введите пароль"
-                           prefWidth="200"/>
+            <Label text="Пароль:" styleClass="form-label"/>
+            <PasswordField fx:id="passwordField" promptText="Введите пароль" prefWidth="200"/>
 
             <!-- Кнопки -->
-            <Button text="Зарегистрироваться"
-                    fx:id="registerButton"
-                    styleClass="form-button"
-                    onAction="#handleRegister"
-                    prefWidth="200"/>
+            <Button text="Зарегистрироваться" fx:id="registerButton"
+                    styleClass="form-button" onAction="#handleRegister" prefWidth="200"/>
 
-            <Button text="Назад к входу"
-                    styleClass="link-button"
-                    onAction="#handleBackToLogin"/>
+            <Button text="Назад к входу" styleClass="link-button" onAction="#handleBackToLogin"/>
         </VBox>
-
     </VBox>
-
-
-
 </AnchorPane>

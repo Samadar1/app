@@ -27,3 +27,33 @@
 .insets-medium {
     -fx-padding: 20;
 }
+
+.centered {
+    -fx-alignment: CENTER;
+}
+
+.section-title {
+    -fx-font-size: 24px;
+    -fx-padding: 10;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 0);
+}
+
+.form-group {
+    -fx-spacing: 5;
+}
+
+.form-control {
+    -fx-prompt-text-fill: derive(-fx-text-fill, 30%);
+    -fx-padding: 8;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 4;
+    -fx-min-height: 30;
+}
