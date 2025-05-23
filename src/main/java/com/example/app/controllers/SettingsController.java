@@ -2,6 +2,10 @@ package com.example.app.controllers;
 
 import com.example.app.util.SessionManager;
 import com.example.app.util.TextEncoderDecoder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
@@ -13,7 +17,10 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.CheckComboBox;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -58,9 +65,28 @@ public class SettingsController{
     }
 
     @FXML
-    public void onUpdateProfile(ActionEvent actionEvent) {
+    public void onUpdateProfile(ActionEvent actionEvent) throws JsonProcessingException {
         List<String> checkedItems = checkComboBox.getCheckModel().getCheckedItems();
 
-        System.out.println(checkedItems);
+        HttpClient client = HttpClient.newHttpClient();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode rootNode = mapper.createObjectNode();
+        rootNode.put("personId", SessionManager.getUserId());
+
+        ArrayNode skillArray = rootNode.putArray("personSkillSet");
+
+        for (String skill : checkedItems) {
+            skillArray.add(skill);
+        }
+        String jsonOutput = mapper.writeValueAsString(rootNode);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Person/updateSkillSetById"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonOutput))
+                .build();
+
     }
 }

@@ -98,14 +98,10 @@ public class RegisterController {
                         .build();
 
                 HttpResponse<String> responseNeo4j = client.send(requestNeo4j, HttpResponse.BodyHandlers.ofString());
-                System.out.println("Request URL: " + request.uri());
-                System.out.println(jsonNeo4j);
-                System.out.println("Response Code: " + responseNeo4j.statusCode());
-                System.out.println("Response Body: " + responseNeo4j.body());
 
                 SessionManager.setUsername(new ObjectMapper().readTree(responseNeo4j.body()).get("name").asText());
+                SessionManager.setEmail(email);
                 SessionManager.setUserId(new ObjectMapper().readTree(responseNeo4j.body()).get("id").asLong());
-                System.out.println(SessionManager.getUserId());
 
                 return new ObjectMapper().readTree(response.body()).get("token").asText();
             }

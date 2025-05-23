@@ -4,6 +4,7 @@ public class SessionManager {
     private static String jwtToken;
     private static String username;
     private static Long userId;
+    private static String email;
 
 
 
@@ -32,5 +33,13 @@ public class SessionManager {
 
     public static void setUserId(long Id) {
         userId = Id;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public static void setEmail(String email) {
+        SessionManager.email = email;
     }
 }
