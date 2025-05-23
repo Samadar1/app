@@ -3,6 +3,7 @@ package com.example.app.util;
 public class SessionManager {
     private static String jwtToken;
     private static String username;
+    private static Long userId;
 
 
 
@@ -22,7 +23,14 @@ public class SessionManager {
         username = name;
     }
 
-    public String getUsername() {
+    public static String getUsername() {
         return username;
+    }
+    public static long getUserId() {
+        return userId;
+    }
+
+    public static void setUserId(long Id) {
+        userId = Id;
     }
 }

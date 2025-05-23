@@ -1,5 +1,7 @@
 package com.example.app.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -18,6 +20,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegisterController {
     @FXML
@@ -77,6 +81,31 @@ public class RegisterController {
                     System.out.println("Response Body: " + response.body());
                     throw new IOException("Registration failed: " + response.body());
                 }
+                ObjectMapper mapper = new ObjectMapper();
+
+                ObjectNode rootNode = mapper.createObjectNode();
+                rootNode.put("name", name);
+
+                ArrayNode skillSet = mapper.createArrayNode(); // Пустой массив
+                rootNode.set("skillSet", skillSet);
+
+                String jsonNeo4j = mapper.writeValueAsString(rootNode);
+
+                HttpRequest requestNeo4j = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/api/v1/Person/create"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(jsonNeo4j))
+                        .build();
+
+                HttpResponse<String> responseNeo4j = client.send(requestNeo4j, HttpResponse.BodyHandlers.ofString());
+                System.out.println("Request URL: " + request.uri());
+                System.out.println(jsonNeo4j);
+                System.out.println("Response Code: " + responseNeo4j.statusCode());
+                System.out.println("Response Body: " + responseNeo4j.body());
+
+                SessionManager.setUsername(new ObjectMapper().readTree(responseNeo4j.body()).get("name").asText());
+                SessionManager.setUserId(new ObjectMapper().readTree(responseNeo4j.body()).get("id").asLong());
+                System.out.println(SessionManager.getUserId());
 
                 return new ObjectMapper().readTree(response.body()).get("token").asText();
             }

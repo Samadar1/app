@@ -37,8 +37,6 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        String requestUrl = "http://localhost:8000/api/auth/check-jwt";
         if (!TextEncoderDecoder.is_empty()) {
             String decodedJWT = TextEncoderDecoder.decodeFromFile();
 

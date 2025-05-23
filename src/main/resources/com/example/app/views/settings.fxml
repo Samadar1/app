@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
+<?import org.controlsfx.control.*?>
 <?import java.net.URL?>
+
 <AnchorPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.app.controllers.SettingsController"
@@ -24,10 +25,23 @@
             <Label text="Пароль:" styleClass="form-label"/>
             <PasswordField promptText="Введите пароль" styleClass="form-control"/>
         </VBox>
-        <Button text="Сохранить изменения" styleClass="form-button"/>
 
-        <VBox>
-            <Button text="Выйти из системы" onAction="#onLogoutButtonClick"/>
+        <VBox styleClass="form-group">
+            <Label styleClass="form-label" text="Email:" />
+            <TextField promptText="Введите email" styleClass="form-control" />
+        </VBox>
+
+        <VBox styleClass="form-group">
+            <Label styleClass="form-label" text="Ваши навыки: " />
+            <CheckComboBox id="checkComboBox" fx:id="checkComboBox" title="Выберите значения из списка" />
+        </VBox>
+
+        <VBox styleClass="form-group">
+        <Button text="Сохранить изменения" styleClass="form-button" onAction="#onUpdateProfile"/>
+        </VBox>
+
+        <VBox styleClass="form-group">
+            <Button text="Выйти из системы" styleClass="form-button" onAction="#onLogoutButtonClick"/>
         </VBox>
     </VBox>
 </AnchorPane>

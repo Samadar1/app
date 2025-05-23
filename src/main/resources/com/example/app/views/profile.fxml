@@ -13,27 +13,10 @@
 
     <VBox alignment="CENTER" spacing="10" styleClass="insets-medium">
         <Label styleClass="section-title" text="Профиль пользователя" />
-
-        <VBox styleClass="form-group">
-            <Label styleClass="form-label" text="Имя:" />
-            <TextField promptText="Введите имя" styleClass="form-control" />
+        <VBox>
+            <Label styleClass="form-label" fx:id="Username"/>
         </VBox>
-
-        <VBox styleClass="form-group">
-            <Label styleClass="form-label" text="Фамилия:" />
-            <TextField promptText="Введите фамилию" styleClass="form-control" />
-        </VBox>
-
-        <VBox styleClass="form-group">
-            <Label styleClass="form-label" text="Email:" />
-            <TextField promptText="Введите email" styleClass="form-control" />
-        </VBox>
-
-        <VBox spacing="10">
-            <Label styleClass="form-label" text="Ваши навыки: " />
-            <CheckComboBox id="checkComboBox" fx:id="checkComboBox" title="Выберите значения из списка" />
-        </VBox>
-
-        <Button styleClass="form-button" text="Обновить профиль" />
     </VBox>
+
+
 </AnchorPane>
