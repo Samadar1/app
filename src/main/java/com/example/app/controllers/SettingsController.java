@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -65,7 +66,7 @@ public class SettingsController{
     }
 
     @FXML
-    public void onUpdateProfile(ActionEvent actionEvent) throws JsonProcessingException {
+    public void onUpdateProfile(ActionEvent actionEvent) throws IOException, InterruptedException {
         List<String> checkedItems = checkComboBox.getCheckModel().getCheckedItems();
 
         HttpClient client = HttpClient.newHttpClient();
@@ -81,12 +82,14 @@ public class SettingsController{
             skillArray.add(skill);
         }
         String jsonOutput = mapper.writeValueAsString(rootNode);
-
+        System.out.println(jsonOutput);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/v1/Person/updateSkillSetById"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonOutput))
                 .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
 
     }
 }
