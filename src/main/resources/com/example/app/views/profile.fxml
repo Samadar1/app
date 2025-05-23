@@ -16,6 +16,9 @@
         <VBox>
             <Label styleClass="form-label" fx:id="Username"/>
         </VBox>
+        <VBox>
+            <Label styleClass="form-label" fx:id="Email"/>
+        </VBox>
     </VBox>
 
 

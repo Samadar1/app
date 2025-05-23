@@ -7,16 +7,17 @@ import javafx.scene.control.Label;
 
 public class ProfileController {
 
+    @FXML
+    Label Email;
 
     @FXML
     Label Username;
 
     public void initialize() {
         Username.setText("Имя пользователя: " + SessionManager.getUsername());
+        Email.setText("Email: " + SessionManager.getEmail());
     }
 
-    public void setemail(){
 
-    }
 }
 
