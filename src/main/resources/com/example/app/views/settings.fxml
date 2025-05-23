@@ -37,7 +37,7 @@
         </VBox>
 
         <VBox styleClass="form-group">
-        <Button text="Сохранить изменения" styleClass="form-button" onAction="#onUpdateProfile"/>
+            <Button text="Сохранить изменения" styleClass="form-button" onAction="#onUpdateProfile"/>
         </VBox>
 
         <VBox styleClass="form-group">

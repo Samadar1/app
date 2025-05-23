@@ -4,23 +4,36 @@
 <?import javafx.geometry.Insets?>
 
 <?import java.net.URL?>
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.app.controllers.ProjectsController">
+<AnchorPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.app.controllers.ProjectsController"
+            >
+
     <stylesheets>
         <URL value="@../styles/main.css"/>
         <URL value="@../styles/styles.css"/>
     </stylesheets>
 
-    <VBox spacing="10" styleClass="insets-medium">
-        <Label text="Проекты" styleClass="section-title"/>
+    <VBox spacing="10" style="-fx-padding: 10;">
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Мои проекты" styleClass="section-title"/>
+        </VBox>
 
-        <TableView prefHeight="200">
-            <columns>
-                <TableColumn text="Название" prefWidth="200"/>
-                <TableColumn text="Статус" prefWidth="100"/>
-            </columns>
-        </TableView>
+        <ScrollPane prefWidth="600" prefHeight="400">
+            <GridPane fx:id="projectGrid" hgap="20" vgap="20">
+                <!-- Columns -->
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="45"/>
+                    <ColumnConstraints percentWidth="45"/>
+                </columnConstraints>
 
-        <Button text="Создать новый проект" styleClass="form-button"/>
+            </GridPane>
+        </ScrollPane>
+
+        <VBox>
+            <Button text="Создать новый проект" styleClass="form-button" onAction="#clickedOnCreateProject"/>
+        </VBox>
+
     </VBox>
+
 </AnchorPane>
