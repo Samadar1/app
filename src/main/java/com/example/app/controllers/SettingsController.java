@@ -82,7 +82,7 @@ public class SettingsController{
             skillArray.add(skill);
         }
         String jsonOutput = mapper.writeValueAsString(rootNode);
-        System.out.println(jsonOutput);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/v1/Person/updateSkillSetById"))
                 .header("Content-Type", "application/json")
