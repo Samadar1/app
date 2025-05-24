@@ -28,7 +28,7 @@ public class ProjectsController {
     private static Project selectedProject;
 
     public void initialize() throws IOException, InterruptedException {
-        generateProjectCards(RequestsNeo4j.getAllProjectsFromDB());
+        generateProjectCards(RequestsNeo4j.getAllUsersProjectsByUserId(SessionManager.getUserId()));
     }
 
     @FXML
@@ -69,7 +69,7 @@ public class ProjectsController {
             }
 
             try {
-                generateProjectCards(RequestsNeo4j.getAllProjectsFromDB());
+                generateProjectCards(RequestsNeo4j.getAllUsersProjectsByUserId(SessionManager.getUserId()));
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }

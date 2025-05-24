@@ -1,7 +1,6 @@
 package com.example.app.util.requests;
 
 import com.example.app.model.Project;
-import com.example.app.util.SessionManager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -15,6 +14,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class RequestsNeo4j {
     private static final HttpClient client = HttpClient.newHttpClient();
@@ -27,24 +27,26 @@ public class RequestsNeo4j {
                 .build();
 
         HttpResponse<String> response = client.send(requestNeo4j, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200 && !Objects.equals(response.body(), "[]")) {
+            ObjectMapper objectMapper = new ObjectMapper();
 
-        ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, Object>> userList = objectMapper.readValue(
+                    response.body(),
+                    new TypeReference<List<Map<String, Object>>>() {}
+            );
 
-        List<Map<String, Object>> userList = objectMapper.readValue(
-                response.body(),
-                new TypeReference<List<Map<String, Object>>>() {}
-        );
+            Map<String, Object> user = userList.get(0);
 
-        Map<String, Object> user = userList.get(0);
-
-        return Long.parseLong(user.get("id").toString());
+            return Long.parseLong(user.get("id").toString());
+        }
+        return -1;
     }
 
-    public static List<Project> getAllProjectsFromDB() throws IOException, InterruptedException {
+    public static List<Project> getAllUsersProjectsByUserId(long personId) throws IOException, InterruptedException {
         List<Project> projects = new ArrayList<>();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Person/projects-of-person/" + SessionManager.getUserId()))
+                .uri(URI.create("http://localhost:8080/api/v1/Person/projects-of-person/" + personId))
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
@@ -111,6 +113,23 @@ public class RequestsNeo4j {
         return new ObjectMapper().readTree(client.send(request, HttpResponse.BodyHandlers.ofString()).body()).get("id").asLong();
     }
 
+    public static void addMembersToProject(long projectId, long memberId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("projectId", projectId);
+        rootNode.put("personId", memberId);
+        String jsonToMember = mapper.writeValueAsString(rootNode);
+
+        HttpRequest requestToMembers = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/members"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonToMember))
+                .build();
+
+        client.send(requestToMembers, HttpResponse.BodyHandlers.ofString());
+    }
+
     public static void updateSkillSetById(List<String> checkedItems, long personId) throws IOException, InterruptedException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -131,5 +150,36 @@ public class RequestsNeo4j {
                 .build();
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static List<String> getAllMembersInProjectByProjectId(long projectId) throws IOException, InterruptedException {
+        HttpRequest requestToCreate = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/members-of-project/" + projectId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        if (response.statusCode() == 200 && !Objects.equals(response.body(), "[]")) {
+            List<String> members = new ArrayList<>();
+
+            List<Map<String, Object>> membersList = mapper.readValue(
+                    response.body(),
+                    new TypeReference<List<Map<String, Object>>>() {
+                    }
+            );
+
+            for (Map<String, Object> member : membersList) {
+                String name = member.get("name").toString();
+                members.add(name);
+            }
+
+            return members;
+        }
+
+        return null;
     }
 }
