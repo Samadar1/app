@@ -69,13 +69,13 @@ public class RequestsNeo4j {
     }
 
     public static void addProjectToDB(Project project , long personId) throws IOException, InterruptedException {
-        addMembersToProject(createProject(project), personId);
+        createProject(project, personId);
     }
 
-    private static long createProject(Project project) throws IOException, InterruptedException {
+    private static long createProject(Project project, long personId) throws IOException, InterruptedException {
         String jsonToCreate = String.format(
-                "{\"title\":\"%s\"}",
-                project.getName()
+                "{\"title\":\"%s\",\"creatorId\":\"%s\"}",
+                project.getName(), personId
         );
 
         HttpRequest requestToCreate = HttpRequest.newBuilder()
@@ -89,23 +89,6 @@ public class RequestsNeo4j {
         Map<String, Object> jsonResponse = mapperDb.readValue(response.body(), Map.class);
 
         return Long.parseLong(jsonResponse.get("id").toString());
-    }
-
-    private static void addMembersToProject(long projectId, long personId) throws IOException, InterruptedException {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode rootNode = mapper.createObjectNode();
-
-        rootNode.put("projectId", projectId);
-        rootNode.put("personId", personId);
-        String jsonToMember = mapper.writeValueAsString(rootNode);
-
-        HttpRequest requestToMembers = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Project/members"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonToMember))
-                .build();
-
-        client.send(requestToMembers, HttpResponse.BodyHandlers.ofString());
     }
 
     public static long createUser(String username) throws IOException, InterruptedException {
