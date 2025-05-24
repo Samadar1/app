@@ -6,8 +6,6 @@ public class SessionManager {
     private static Long userId;
     private static String email;
 
-
-
     public static void setAuthToken(String token) {
         jwtToken = token;
     }

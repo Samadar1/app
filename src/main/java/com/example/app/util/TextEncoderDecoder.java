@@ -7,15 +7,10 @@ import java.nio.file.Paths;
 import java.util.Base64;
 
 public class TextEncoderDecoder {
-
     // Получаем путь к AppData
     private static final String APP_DATA_PATH = System.getenv("APPDATA") + "\\MyApp";
     private static final String FILE_NAME = "data.txt";
     private static final Path FILE_PATH = Paths.get(APP_DATA_PATH, FILE_NAME);
-
-    public static Path getFilePath() {
-        return FILE_PATH;
-    }
 
     // Закодировать строку и сохранить в файл
     public static void encodeAndSave(String input) throws IOException {
@@ -36,9 +31,11 @@ public class TextEncoderDecoder {
         }
 
         String encoded;
+
         try (BufferedReader reader = Files.newBufferedReader(FILE_PATH)) {
             encoded = reader.readLine();
         }
+
         byte[] decodedBytes = Base64.getDecoder().decode(encoded);
         return new String(decodedBytes);
     }

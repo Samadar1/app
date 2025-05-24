@@ -3,33 +3,24 @@ package com.example.app.controllers;
 import com.example.app.util.SessionManager;
 import com.example.app.util.TextEncoderDecoder;
 import com.example.app.util.requests.RequestsNeo4j;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+
 import org.controlsfx.control.CheckComboBox;
+
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 public class SettingsController{
-
-    @FXML private AnchorPane settingsPane;
+    @FXML
+    private AnchorPane settingsPane;
 
     @FXML
     private CheckComboBox<String> checkComboBox;

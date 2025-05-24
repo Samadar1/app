@@ -1,6 +1,6 @@
 package com.example.app.controllers;
 
-import com.example.app.util.Requests;
+import com.example.app.util.requests.Requests;
 import com.example.app.util.SessionManager;
 import com.example.app.util.TextEncoderDecoder;
 import com.example.app.util.requests.RequestsNeo4j;

@@ -1,10 +1,8 @@
 package com.example.app.controllers;
-import com.example.app.util.Requests;
-import com.example.app.util.TextEncoderDecoder;
+import com.example.app.util.requests.Requests;
 import com.example.app.util.requests.RequestsNeo4j;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.example.app.util.SessionManager;
+
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -14,17 +12,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import com.example.app.util.SessionManager;
 import javafx.stage.Stage;
 
-
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RegisterController {
     @FXML
@@ -94,8 +84,6 @@ public class RegisterController {
                 showAlert("Error", task.getException().getMessage()))
         );
     }
-
-
 
     private void loadMainView() {
         Platform.runLater(() -> {

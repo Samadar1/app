@@ -23,9 +23,7 @@ public class ProjectsController {
     private TextField inputField;
 
     public void initialize() throws IOException, InterruptedException {
-
         generateProjectCards(RequestsNeo4j.getAllProjectsFromDB());
-
     }
 
     @FXML

@@ -3,9 +3,9 @@ package com.example.app.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
@@ -20,9 +20,7 @@ public class MainViewController implements Initializable {
 
     private void loadView(String viewName) {
         try {
-            AnchorPane newView = (AnchorPane) FXMLLoader.load(
-                    getClass().getResource("/com/example/app/views/" + viewName + ".fxml")
-            );
+            AnchorPane newView = (AnchorPane) FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/" + viewName + ".fxml")));
             contentArea.getChildren().setAll(newView);
         } catch (Exception e) {
             e.printStackTrace();
