@@ -63,15 +63,10 @@ public class Main extends Application {
             SessionManager.setUsername(username);
 
             if (response.statusCode() == 200) {
-                String jsonNeo4j = String.format(
-                        "{\"name\":\"%s\"}",
-                        SessionManager.getUsername()
-                );
-
                 HttpRequest requestNeo4j = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/api/v1/Person/getByName"))
+                        .uri(URI.create("http://localhost:8080/api/v1/Person/get-person-by-name/"+ SessionManager.getUsername()))
                         .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(jsonNeo4j))
+                        .GET()
                         .build();
 
 
