@@ -17,6 +17,7 @@
             <Button text="Настройки" onAction="#switchToSettings"/>
             <Button text="Команда" onAction="#switchToTeam"/>
             <Button text="Проекты" onAction="#switchToProjects"/>
+            <Button text="Проект" onAction="#switchToProject"/>
         </VBox>
     </left>
 
