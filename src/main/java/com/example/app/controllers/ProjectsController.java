@@ -1,10 +1,9 @@
 package com.example.app.controllers;
 
+import com.example.app.util.Requests;
 import com.example.app.util.SessionManager;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -18,7 +17,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,35 +27,12 @@ public class ProjectsController {
 
     @FXML
     private TextField inputField;
-    // Пример данных
-    private List<Project> projects = new ArrayList<>();
+    ;
 
     public void initialize() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
 
+        generateProjectCards(Requests.getAllProjectsFromDB());
 
-        HttpRequest requestToMembers = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Person/projects-of-person/" + SessionManager.getUserId()))
-                .header("Content-Type", "application/json")
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(requestToMembers, HttpResponse.BodyHandlers.ofString());
-
-        ObjectMapper mapper = new ObjectMapper();
-        List<Map<String, Object>> projectList = mapper.readValue(
-                response.body(),
-                new TypeReference<List<Map<String, Object>>>() {}
-        );
-         for (Map<String, Object> project : projectList) {
-             long id = Long.parseLong(project.get("id").toString());
-             String name = project.get("title").toString();
-
-             Project tempProject = new Project(id, name);
-             projects.add(tempProject);
-         }
-
-        generateProjectCards();
     }
 
     @FXML
@@ -90,21 +65,22 @@ public class ProjectsController {
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(projectName -> {
-            Project project = new Project(projectName);
-            projects.add(project);
-            generateProjectCards();
-
+              Project project = new Project(projectName);
             try {
-                createProjectInDB(project);
+                Requests.addProjectToDB(project);
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            
+            try {
+                generateProjectCards(Requests.getAllProjectsFromDB());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
-
-
-    private void generateProjectCards() {
+    private void generateProjectCards(List<Project> projects) {
         int row = 0;
         int col = 0;
 
@@ -133,43 +109,5 @@ public class ProjectsController {
                 row++;
             }
         }
-    }
-
-    public void createProjectInDB(Project project) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-
-        String jsonToCreate = String.format(
-                "{\"title\":\"%s\"}",
-                project.getName()
-        );
-
-        HttpRequest requestToCreate = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Project/create"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonToCreate))
-                .build();
-
-        HttpResponse<String> response = client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
-        ObjectMapper mapperDb = new ObjectMapper();
-        Map<String, Object> jsonResponse = mapperDb.readValue(response.body(), Map.class);
-        long id = Long.parseLong(jsonResponse.get("id").toString());
-        project.setId(id);
-
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode rootNode = mapper.createObjectNode();
-
-        rootNode.put("projectId", project.getId());
-        rootNode.put("personId", SessionManager.getUserId());
-        String jsonToMember = mapper.writeValueAsString(rootNode);
-
-        HttpRequest requestToMembers = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Project/members"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonToMember))
-                .build();
-
-
-        client.send(requestToMembers, HttpResponse.BodyHandlers.ofString());
-
     }
 }
