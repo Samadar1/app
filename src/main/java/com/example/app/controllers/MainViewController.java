@@ -39,6 +39,4 @@ public class MainViewController implements Initializable {
     @FXML
     private void switchToProjects() { loadView("projects"); }
 
-    @FXML
-    private void switchToProject() { loadView("project"); }
 }

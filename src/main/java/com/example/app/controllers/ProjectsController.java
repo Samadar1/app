@@ -5,14 +5,14 @@ import com.example.app.util.SessionManager;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import com.example.app.model.Project;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ProjectsController {
@@ -20,7 +20,12 @@ public class ProjectsController {
     private GridPane projectGrid;
 
     @FXML
+    private AnchorPane projectsPane;
+
+    @FXML
     private TextField inputField;
+
+    private static Project selectedProject;
 
     public void initialize() throws IOException, InterruptedException {
         generateProjectCards(RequestsNeo4j.getAllProjectsFromDB());
@@ -80,16 +85,15 @@ public class ProjectsController {
             VBox card = new VBox(10);
             card.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-border-color: #ccc;");
             card.setMinSize(200, 100);
+            card.setMaxSize(200, 100);
 
             Label label = new Label(project.getName());
-            label.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+            label.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill:#000;");
 
-            // Пример графического элемента
-            Rectangle rectangle = new Rectangle(40, 20, Color.LIGHTBLUE);
-            HBox graphicBox = new HBox(rectangle);
-            graphicBox.setAlignment(javafx.geometry.Pos.CENTER);
+            Button button = getButton(project);
 
-            card.getChildren().addAll(graphicBox, label);
+            card.setAlignment(javafx.geometry.Pos.CENTER);
+            card.getChildren().addAll(label, button);
 
             // Добавляем на сетку
             projectGrid.add(card, col, row);
@@ -100,5 +104,29 @@ public class ProjectsController {
                 row++;
             }
         }
+    }
+
+    private Button getButton(Project project) {
+        Button button = new Button("Подробнее");
+        button.setUserData(project);
+        button.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        button.setOnAction(event -> {
+            selectedProject = project;
+
+            try {
+                // Используем FXMLLoader для загрузки FXML и получения контроллера
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/app/views/project.fxml"));
+                AnchorPane newView = loader.load();
+                // Обновляем содержимое
+                projectsPane.getChildren().setAll(newView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return button;
+    }
+
+    public static Project getSelectedProject() {
+        return selectedProject;
     }
 }

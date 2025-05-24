@@ -7,6 +7,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.app.controllers.ProjectsController"
+            fx:id="projectsPane"
             >
 
     <stylesheets>
@@ -19,14 +20,8 @@
             <Label text="Мои проекты" styleClass="section-title"/>
         </VBox>
 
-        <ScrollPane prefWidth="600" prefHeight="400">
-            <GridPane fx:id="projectGrid" hgap="20" vgap="20">
-                <!-- Columns -->
-                <columnConstraints>
-                    <ColumnConstraints percentWidth="45"/>
-                    <ColumnConstraints percentWidth="45"/>
-                </columnConstraints>
-
+        <ScrollPane prefWidth="450" prefHeight="400" styleClass="project-scroll-pane">
+            <GridPane fx:id="projectGrid" hgap="35" vgap="20" styleClass="project-scroll-pane">
             </GridPane>
         </ScrollPane>
 

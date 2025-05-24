@@ -9,7 +9,8 @@
 <?import java.net.URL?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.app.controllers.ProjectController"
+            fx:controller="com.example.app.controllers.ProjectDetailsController"
+            fx:id="projectPane"
             prefHeight="400.0" prefWidth="600.0">
 
     <stylesheets>
@@ -36,7 +37,7 @@
         </VBox>
         <HBox styleClass="project-control-buttons">
             <Button text="Сохранить" styleClass="form-button, form-button-success"/>
-            <Button text="Назад" styleClass="form-button"/>
+            <Button text="Назад" styleClass="form-button" onAction="#clickedOnBack"/>
         </HBox>
     </VBox>
 

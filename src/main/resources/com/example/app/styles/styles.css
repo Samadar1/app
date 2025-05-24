@@ -66,3 +66,11 @@
 #checkComboBox {
     -fx-pref-width: 400px !important;
 }
+
+.project-scroll-pane {
+    -fx-background-color: #fff;
+    -fx-hbar-policy: NEVER;
+    -fx-vbar-policy: NEVER;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
