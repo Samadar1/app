@@ -3,16 +3,34 @@
     -fx-font-weight: bold;
 }
 
+/* FORM BUTTONS */
+
 .form-button {
-    -fx-background-color: #4CAF50;
+    -fx-background-color: #6c757d;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-radius: 5;
+    -fx-background-radius: 10;
     -fx-padding: 8 16;
 }
 
 .form-button:hover {
-    -fx-background-color: #45a049;
+    -fx-background-color: #5a6268;
+}
+
+.form-button-secondary {
+    -fx-background-color: #007bff;
+}
+
+.form-button-secondary:hover {
+    -fx-background-color: #0069d9;
+}
+
+.form-button-success {
+    -fx-background-color: #28a745;
+}
+
+.form-button-success:hover {
+    -fx-background-color: #218838;
 }
 
 .form-button-danger {

@@ -22,7 +22,7 @@
             <Label text="" styleClass="section-title" fx:id="projectName"/>
         </VBox>
         <VBox>
-            <TextField fx:id="projectNameInputField" promptText="Введите новое название проекта: "/>
+            <TextField fx:id="projectNameInputField" promptText="Введите новое название проекта: " styleClass="form-control"/>
             <Label text="Команда проекта " styleClass="section-title"/>
             <VBox>
                 <ListView fx:id="teamListView" prefHeight="200"/>
@@ -32,11 +32,11 @@
                 </HBox>
             </VBox>
             <Label text="Настройки" styleClass="section-title"/>
-            <Button text="Удалить проект" styleClass="form-button"/>
+            <Button text="Удалить проект" styleClass="form-button, form-button-danger"/>
         </VBox>
         <HBox styleClass="project-control-buttons">
-            <Button text="Сохранить" styleClass="form-button"/>
-            <Button text="Отменить" styleClass="form-button, form-button-danger"/>
+            <Button text="Сохранить" styleClass="form-button, form-button-success"/>
+            <Button text="Назад" styleClass="form-button"/>
         </HBox>
     </VBox>
 

@@ -52,6 +52,7 @@
 
 .form-control {
     -fx-prompt-text-fill: derive(-fx-text-fill, 30%);
+    -fx-font-weight: bold;
     -fx-padding: 8;
     -fx-border-color: #ccc;
     -fx-border-radius: 4;
