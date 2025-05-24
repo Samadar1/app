@@ -15,70 +15,80 @@ import java.util.List;
 import java.util.Map;
 
 public class Requests {
-    public static List<Project> getAllProjectsFromDB() throws IOException, InterruptedException {
+    private static final HttpClient client = HttpClient.newHttpClient();
 
-        List<Project> projects = new ArrayList<>();
-        HttpClient client = HttpClient.newHttpClient();
+    public static String checkJWT(String token) throws IOException, InterruptedException {
+        String json = String.format(
+                "{\"token\":\"%s\"}",
+                token
+        );
 
-        HttpRequest requestToMembers = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Person/projects-of-person/" + SessionManager.getUserId()))
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8000/auth/check-jwt"))
                 .header("Content-Type", "application/json")
-                .GET()
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        HttpResponse<String> response = client.send(requestToMembers, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        ObjectMapper mapper = new ObjectMapper();
-        List<Map<String, Object>> projectList = mapper.readValue(
-                response.body(),
-                new TypeReference<List<Map<String, Object>>>() {
-                }
-        );
-        for (Map<String, Object> project : projectList) {
-            long id = Long.parseLong(project.get("id").toString());
-            String name = project.get("title").toString();
-
-            Project tempProject = new Project(id, name);
-            projects.add(tempProject);
+        if (response.statusCode() == 200) {
+            return new ObjectMapper().readTree(response.body()).get("username").asText();
         }
-        return projects;
+
+        return null;
     }
 
-    public static void addProjectToDB(Project project) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-
-        String jsonToCreate = String.format(
-                "{\"title\":\"%s\"}",
-                project.getName()
+    public static String signIn(String login, String password) throws IOException, InterruptedException {
+        String json = String.format(
+                "{\"username\":\"%s\",\"password\":\"%s\"}",
+                login, password
         );
 
-        HttpRequest requestToCreate = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Project/create"))
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8000/auth/sign-in"))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonToCreate))
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        HttpResponse<String> response = client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
-        ObjectMapper mapperDb = new ObjectMapper();
-        Map<String, Object> jsonResponse = mapperDb.readValue(response.body(), Map.class);
-        long id = Long.parseLong(jsonResponse.get("id").toString());
-        project.setId(id);
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode rootNode = mapper.createObjectNode();
-
-        rootNode.put("projectId", project.getId());
-        rootNode.put("personId", SessionManager.getUserId());
-        String jsonToMember = mapper.writeValueAsString(rootNode);
-
-        HttpRequest requestToMembers = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Project/members"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonToMember))
-                .build();
-
-
-        client.send(requestToMembers, HttpResponse.BodyHandlers.ofString());
-
+        if (response.statusCode() == 200) {
+            return new ObjectMapper().readTree(response.body()).get("token").asText();
+        }
+        return null;
     }
+
+    public static String signUp(String login, String email, String password) throws IOException, InterruptedException {
+        String role = "ROLE_USER";
+
+        String json = String.format(
+                "{\"username\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"%s\"}",
+                login, email, password, role
+        );
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8000/auth/sign-up"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return new ObjectMapper().readTree(response.body()).get("token").asText();
+        }
+        return null;
+    }
+
+    public static String getEmailByUserName(String username) throws IOException, InterruptedException {
+        String baseUrl = "http://localhost:8000/auth/"+ username + "/email";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl))
+                .header("Accept", "application/json")
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+    }
+
 }
