@@ -1,4 +1,7 @@
 package com.example.app.controllers;
+import com.example.app.util.Requests;
+import com.example.app.util.TextEncoderDecoder;
+import com.example.app.util.requests.RequestsNeo4j;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -26,9 +29,15 @@ import java.util.List;
 public class RegisterController {
     @FXML
     private TextField nameField;
-    @FXML private TextField emailField;
-    @FXML private PasswordField passwordField;
-    @FXML private AnchorPane registerPane;
+
+    @FXML
+    private TextField emailField;
+
+    @FXML
+    private PasswordField passwordField;
+
+    @FXML
+    private AnchorPane registerPane;
 
     @FXML
     private void handleRegister() {
@@ -60,50 +69,17 @@ public class RegisterController {
         return new Task<>() {
             @Override
             protected String call() throws Exception {
-                HttpClient client = HttpClient.newHttpClient();
-                String role = "ROLE_USER";
-                String json = String.format(
-                        "{\"username\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"%s\"}",
-                        name, email, password, role
-                );
+                String jwt = Requests.signUp(name, email, password);
 
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8000/auth/sign-up"))
-                        .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(json))
-                        .build();
+                if (jwt != null) {
+                    SessionManager.setUsername(name);
+                    SessionManager.setEmail(email);
+                    SessionManager.setUserId(RequestsNeo4j.createUser(name));
 
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() != 200) {
-                    System.out.println("Request URL: " + request.uri());
-                    System.out.println("Response Code: " + response.statusCode());
-                    System.out.println("Response Body: " + response.body());
-                    throw new IOException("Registration failed: " + response.body());
+                } else {
+                    throw new IOException("Login failed: " );
                 }
-                ObjectMapper mapper = new ObjectMapper();
-
-                ObjectNode rootNode = mapper.createObjectNode();
-                rootNode.put("name", name);
-
-                ArrayNode skillSet = mapper.createArrayNode(); // Пустой массив
-                rootNode.set("skillSet", skillSet);
-
-                String jsonNeo4j = mapper.writeValueAsString(rootNode);
-
-                HttpRequest requestNeo4j = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/api/v1/Person/create"))
-                        .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(jsonNeo4j))
-                        .build();
-
-                HttpResponse<String> responseNeo4j = client.send(requestNeo4j, HttpResponse.BodyHandlers.ofString());
-
-                SessionManager.setUsername(new ObjectMapper().readTree(responseNeo4j.body()).get("name").asText());
-                SessionManager.setEmail(email);
-                SessionManager.setUserId(new ObjectMapper().readTree(responseNeo4j.body()).get("id").asLong());
-
-                return new ObjectMapper().readTree(response.body()).get("token").asText();
+                return jwt;
             }
         };
     }

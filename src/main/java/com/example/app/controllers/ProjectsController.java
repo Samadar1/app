@@ -1,9 +1,8 @@
 package com.example.app.controllers;
 
-import com.example.app.util.Requests;
+import com.example.app.util.requests.RequestsNeo4j;
 import com.example.app.util.SessionManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,12 +12,7 @@ import javafx.scene.shape.Rectangle;
 import com.example.app.model.Project;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class ProjectsController {
@@ -30,7 +24,7 @@ public class ProjectsController {
 
     public void initialize() throws IOException, InterruptedException {
 
-        generateProjectCards(Requests.getAllProjectsFromDB());
+        generateProjectCards(RequestsNeo4j.getAllProjectsFromDB());
 
     }
 
@@ -66,13 +60,13 @@ public class ProjectsController {
         result.ifPresent(projectName -> {
               Project project = new Project(projectName);
             try {
-                Requests.addProjectToDB(project);
+                RequestsNeo4j.addProjectToDB(project , SessionManager.getUserId());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
             try {
-                generateProjectCards(Requests.getAllProjectsFromDB());
+                generateProjectCards(RequestsNeo4j.getAllProjectsFromDB());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }

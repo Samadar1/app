@@ -2,6 +2,7 @@ package com.example.app.controllers;
 
 import com.example.app.util.SessionManager;
 import com.example.app.util.TextEncoderDecoder;
+import com.example.app.util.requests.RequestsNeo4j;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -68,28 +69,6 @@ public class SettingsController{
     @FXML
     public void onUpdateProfile(ActionEvent actionEvent) throws IOException, InterruptedException {
         List<String> checkedItems = checkComboBox.getCheckModel().getCheckedItems();
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        ObjectNode rootNode = mapper.createObjectNode();
-        rootNode.put("personId", SessionManager.getUserId());
-
-        ArrayNode skillArray = rootNode.putArray("personSkillSet");
-
-        for (String skill : checkedItems) {
-            skillArray.add(skill);
-        }
-        String jsonOutput = mapper.writeValueAsString(rootNode);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Person/updateSkillSetById"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonOutput))
-                .build();
-
-        client.send(request, HttpResponse.BodyHandlers.ofString());
-
+        RequestsNeo4j.updateSkillSetById(checkedItems, SessionManager.getUserId());
     }
 }

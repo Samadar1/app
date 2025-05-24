@@ -1,9 +1,10 @@
 package com.example.app.controllers;
 
+import com.example.app.util.Requests;
 import com.example.app.util.SessionManager;
 import com.example.app.util.TextEncoderDecoder;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.app.util.requests.RequestsNeo4j;
+
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -14,12 +15,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Map;
 
 public class AuthController {
     @FXML private CheckBox rememberMe;
@@ -46,67 +41,17 @@ public class AuthController {
         return new Task<>() {
             @Override
             protected String call() throws Exception {
-                HttpClient client = HttpClient.newHttpClient();
-                String json = String.format(
-                        "{\"username\":\"%s\",\"password\":\"%s\"}",
-                        login, password
-                );
+                String jwt = Requests.signIn(login, password);
 
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8000/auth/sign-in"))
-                        .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(json))
-                        .build();
-
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode()   != 200) {
-                    System.out.println("Request URL: " + request.uri());
-                    System.out.println("Response Code: " + response.statusCode());
-                    System.out.println("Response Body: " + response.body());
-                    throw new IOException("Login failed: " + response.body());
-                }
-                String jwt = new ObjectMapper().readTree(response.body()).get("token").asText();
-                SessionManager.setUsername(login);
-
-
-
-                HttpRequest requestNeo4j = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/api/v1/Person/get-person-by-name/"+ SessionManager.getUsername()))
-                        .header("Content-Type", "application/json")
-                        .GET()
-                        .build();
-
-
-                HttpResponse<String> responseNeo4j = client.send(requestNeo4j, HttpResponse.BodyHandlers.ofString());
-
-                ObjectMapper objectMapper = new ObjectMapper();
-
-                List<Map<String, Object>> userList = objectMapper.readValue(
-                        responseNeo4j.body(),
-                        new TypeReference<List<Map<String, Object>>>() {}
-                );
-
-                Map<String, Object> user = userList.get(0);
-
-
-                long id = Long.parseLong(user.get("id").toString());
-                SessionManager.setUserId(id);
-
-
-                String baseUrl = "http://localhost:8000/auth/"+ SessionManager.getUsername() + "/email";
-
-                HttpRequest requestEmail = HttpRequest.newBuilder()
-                        .uri(URI.create(baseUrl))
-                        .header("Accept", "application/json")
-                        .build();
-
-                HttpResponse<String> responseEmail = client.send(requestEmail, HttpResponse.BodyHandlers.ofString());
-                SessionManager.setEmail(responseEmail.body());
-
-
-                if (rememberMe.isSelected()){
-                    TextEncoderDecoder.encodeAndSave(jwt);
+                if (jwt != null) {
+                    SessionManager.setUsername(login);
+                    SessionManager.setUserId(RequestsNeo4j.getPersonIdByUserName(login));
+                    SessionManager.setEmail(Requests.getEmailByUserName(login));
+                    if (rememberMe.isSelected()){
+                        TextEncoderDecoder.encodeAndSave(jwt);
+                    }
+                } else {
+                    throw new IOException("Login failed: " );
                 }
                 return jwt;
             }
