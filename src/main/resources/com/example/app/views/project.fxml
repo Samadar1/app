@@ -28,15 +28,15 @@
             <VBox>
                 <ListView fx:id="teamListView" prefHeight="200"/>
                 <HBox>
-                    <Button text="Добавить участника" styleClass="form-button"/>
-                    <Button text="Удалить участника" styleClass="form-button"/>
+                    <Button text="Добавить участника" styleClass="form-button" onAction="#clickedOnAddMember"/>
+                    <Button text="Удалить участника" styleClass="form-button" onAction="#clickedOnDelMember"/>
                 </HBox>
             </VBox>
             <Label text="Настройки" styleClass="section-title"/>
-            <Button text="Удалить проект" styleClass="form-button, form-button-danger"/>
+            <Button text="Удалить проект" styleClass="form-button, form-button-danger" onAction="#clickedOnDelProject"/>
         </VBox>
         <HBox styleClass="project-control-buttons">
-            <Button text="Сохранить" styleClass="form-button, form-button-success"/>
+            <Button text="Сохранить" styleClass="form-button, form-button-success" onAction="#clickedOnSaveProject"/>
             <Button text="Назад" styleClass="form-button" onAction="#clickedOnBack"/>
         </HBox>
     </VBox>

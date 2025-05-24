@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -53,4 +54,33 @@ public class ProjectDetailsController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    public void clickedOnAddMember(ActionEvent actionEvent) {
+        showAlert("Test", "clickedOnAddMember");
+    }
+
+    @FXML
+    public void clickedOnDelMember(ActionEvent actionEvent) {
+        showAlert("Test", "clickedOnDelMember");
+    }
+
+    @FXML
+    public void clickedOnDelProject(ActionEvent actionEvent) {
+        showAlert("Test", "clickedOnDelProject");
+    }
+
+    @FXML
+    public void clickedOnSaveProject(ActionEvent actionEvent) {
+        showAlert("Test", "clickedOnSaveProject");
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 }
