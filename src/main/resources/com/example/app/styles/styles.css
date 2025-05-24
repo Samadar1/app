@@ -15,7 +15,13 @@
     -fx-background-color: #45a049;
 }
 
+.form-button-danger {
+    -fx-background-color: #dc3545;
+}
 
+.form-button-danger:hover {
+    -fx-background-color: #c82333;
+}
 
 .link-button {
     -fx-background-color: transparent;

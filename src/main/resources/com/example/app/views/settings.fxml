@@ -41,7 +41,7 @@
         </VBox>
 
         <VBox styleClass="form-group">
-            <Button text="Выйти из системы" styleClass="form-button" onAction="#onLogoutButtonClick"/>
+            <Button text="Выйти из системы" styleClass="form-button, form-button-danger" onAction="#onLogoutButtonClick"/>
         </VBox>
     </VBox>
 </AnchorPane>

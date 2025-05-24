@@ -69,15 +69,12 @@ public class AuthController {
                 String jwt = new ObjectMapper().readTree(response.body()).get("token").asText();
                 SessionManager.setUsername(login);
 
-                String jsonNeo4j = String.format(
-                        "{\"name\":\"%s\"}",
-                        SessionManager.getUsername()
-                );
+
 
                 HttpRequest requestNeo4j = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/api/v1/Person/getByName"))
+                        .uri(URI.create("http://localhost:8080/api/v1/Person/get-person-by-name/"+ SessionManager.getUsername()))
                         .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(jsonNeo4j))
+                        .GET()
                         .build();
 
 

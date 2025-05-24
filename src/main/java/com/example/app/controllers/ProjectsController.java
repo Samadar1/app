@@ -27,7 +27,6 @@ public class ProjectsController {
 
     @FXML
     private TextField inputField;
-    ;
 
     public void initialize() throws IOException, InterruptedException {
 
@@ -71,7 +70,7 @@ public class ProjectsController {
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            
+
             try {
                 generateProjectCards(Requests.getAllProjectsFromDB());
             } catch (IOException | InterruptedException e) {
