@@ -70,11 +70,7 @@ public class RequestsNeo4j {
         return projects;
     }
 
-    public static void addProjectToDB(Project project , long personId) throws IOException, InterruptedException {
-        createProject(project, personId);
-    }
-
-    private static long createProject(Project project, long personId) throws IOException, InterruptedException {
+    public static long createProject(Project project, long personId) throws IOException, InterruptedException {
         String jsonToCreate = String.format(
                 "{\"title\":\"%s\",\"creatorId\":\"%s\"}",
                 project.getName(), personId
@@ -87,10 +83,13 @@ public class RequestsNeo4j {
                 .build();
 
         HttpResponse<String> response = client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
-        ObjectMapper mapperDb = new ObjectMapper();
-        Map<String, Object> jsonResponse = mapperDb.readValue(response.body(), Map.class);
+        if (response.statusCode() == 201) {
+            ObjectMapper mapperDb = new ObjectMapper();
+            Map<String, Object> jsonResponse = mapperDb.readValue(response.body(), Map.class);
 
-        return Long.parseLong(jsonResponse.get("id").toString());
+            return Long.parseLong(jsonResponse.get("id").toString());
+        }
+        return -1;
     }
 
     public static long createUser(String username) throws IOException, InterruptedException {
