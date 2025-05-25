@@ -91,6 +91,7 @@ public class ProjectDetailsController {
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
             if (memberId != -1){
                 try {
                     RequestsNeo4j.addMembersToProject(selectedProject.getId(),memberId);
@@ -99,6 +100,12 @@ public class ProjectDetailsController {
                 }
             } else {
                 showAlert("error 404", "пользователь не найден");
+            }
+
+            try {
+                renderMembers(selectedProject.getId());
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
             }
         });
     }

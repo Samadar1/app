@@ -34,9 +34,6 @@ public class MainViewController implements Initializable {
     private void switchToSettings() { loadView("settings"); }
 
     @FXML
-    private void switchToTeam() { loadView("team"); }
-
-    @FXML
     private void switchToProjects() { loadView("projects"); }
 
 }

@@ -1,5 +1,6 @@
 package com.example.app.controllers;
 
+import com.example.app.util.Alerts;
 import com.example.app.util.requests.RequestsNeo4j;
 import com.example.app.util.SessionManager;
 
@@ -62,16 +63,20 @@ public class ProjectsController {
 
         result.ifPresent(projectName -> {
               Project project = new Project(projectName);
+              long id;
             try {
-                RequestsNeo4j.addProjectToDB(project , SessionManager.getUserId());
+                id = RequestsNeo4j.createProject(project , SessionManager.getUserId());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-            try {
-                generateProjectCards(RequestsNeo4j.getAllUsersProjectsByUserId(SessionManager.getUserId()));
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+            if (id != -1) {
+                try {
+                    generateProjectCards(RequestsNeo4j.getAllUsersProjectsByUserId(SessionManager.getUserId()));
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                Alerts.alert("Предупреждение","Такой проект уже есть", Alert.AlertType.WARNING);
             }
         });
     }

@@ -1,4 +1,5 @@
 package com.example.app.controllers;
+import com.example.app.util.Alerts;
 import com.example.app.util.requests.Requests;
 import com.example.app.util.requests.RequestsNeo4j;
 import com.example.app.util.SessionManager;
@@ -45,11 +46,11 @@ public class RegisterController {
 
     private boolean validateInputs(String name, String email, String password) {
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            showAlert("Error", "All fields are required");
+            Alerts.alert("Предупреждение","Проверте правильность заполнения полей", Alert.AlertType.WARNING);
             return false;
         }
         if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            showAlert("Error", "Invalid email format");
+            Alerts.alert("Предупреждение","Некорректная почта", Alert.AlertType.WARNING);
             return false;
         }
         return true;
@@ -81,7 +82,7 @@ public class RegisterController {
         });
 
         task.setOnFailed(e -> Platform.runLater(() ->
-                showAlert("Error", task.getException().getMessage()))
+                Alerts.alert("Предупреждение", task.getException().getMessage(), Alert.AlertType.ERROR))
         );
     }
 
@@ -102,13 +103,5 @@ public class RegisterController {
         Parent root = FXMLLoader.load(getClass().getResource("/com/example/app/views/auth.fxml"));
         Stage stage = (Stage) registerPane.getScene().getWindow();
         stage.getScene().setRoot(root);
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

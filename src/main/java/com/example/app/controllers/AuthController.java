@@ -1,5 +1,6 @@
 package com.example.app.controllers;
 
+import com.example.app.util.Alerts;
 import com.example.app.util.requests.Requests;
 import com.example.app.util.SessionManager;
 import com.example.app.util.TextEncoderDecoder;
@@ -28,7 +29,7 @@ public class AuthController {
         String password = passwordField.getText();
 
         if (login.isEmpty() || password.isEmpty()) {
-            showAlert("Error", "Please fill all fields");
+            Alerts.alert("Предупреждение","Почта или пароль пустые", Alert.AlertType.WARNING);
             return;
         }
 
@@ -65,7 +66,7 @@ public class AuthController {
         });
 
         task.setOnFailed(e -> Platform.runLater(() ->
-                showAlert("Error", task.getException().getMessage()))
+                Alerts.alert("Предупреждение", task.getException().getMessage(), Alert.AlertType.ERROR))
         );
     }
 
@@ -85,12 +86,5 @@ public class AuthController {
         Parent root = FXMLLoader.load(getClass().getResource("/com/example/app/views/register_view.fxml"));
         Stage stage = (Stage) authPane.getScene().getWindow();
         stage.getScene().setRoot(root);
-    }
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }
