@@ -15,7 +15,6 @@
         <VBox styleClass="side-panel" prefWidth="200">
             <Button text="Профиль" onAction="#switchToProfile"/>
             <Button text="Настройки" onAction="#switchToSettings"/>
-            <Button text="Команда" onAction="#switchToTeam"/>
             <Button text="Проекты" onAction="#switchToProjects"/>
         </VBox>
     </left>
