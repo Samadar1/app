@@ -2,6 +2,7 @@ package com.example.app.util.requests;
 
 import com.example.app.model.Project;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,10 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class RequestsNeo4j {
     private static final HttpClient client = HttpClient.newHttpClient();
@@ -53,19 +51,21 @@ public class RequestsNeo4j {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        ObjectMapper mapper = new ObjectMapper();
-        List<Map<String, Object>> projectList = mapper.readValue(
-                response.body(),
-                new TypeReference<List<Map<String, Object>>>() {
-                }
-        );
+        if (response.statusCode() == 302) {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Map<String, Object>> projectList = mapper.readValue(
+                    response.body(),
+                    new TypeReference<List<Map<String, Object>>>() {
+                    }
+            );
 
-        for (Map<String, Object> project : projectList) {
-            long id = Long.parseLong(project.get("id").toString());
-            String name = project.get("title").toString();
+            for (Map<String, Object> project : projectList) {
+                long id = Long.parseLong(project.get("id").toString());
+                String name = project.get("title").toString();
 
-            Project tempProject = new Project(id, name);
-            projects.add(tempProject);
+                Project tempProject = new Project(id, name);
+                projects.add(tempProject);
+            }
         }
         return projects;
     }
@@ -162,7 +162,7 @@ public class RequestsNeo4j {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        if (response.statusCode() == 200 && !Objects.equals(response.body(), "[]")) {
+        if (response.statusCode() == 302) {
             List<String> members = new ArrayList<>();
 
             List<Map<String, Object>> membersList = mapper.readValue(
@@ -180,5 +180,45 @@ public class RequestsNeo4j {
         }
 
         return null;
+    }
+
+    public static List<Long> getProjectById(long projectId) throws IOException, InterruptedException {
+        List<Long> personid = new ArrayList<>();
+
+        HttpRequest requestToCreate = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/get-project/" + projectId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
+        List<Long> ids = new ArrayList<>();
+
+        if (response.statusCode() == 302) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode = objectMapper.readTree(response.body());
+
+                // Извлекаем creator.id
+                JsonNode creatorArray = rootNode.get("creator");
+                if (creatorArray != null && creatorArray.isArray()) {
+                    for (JsonNode node : creatorArray) {
+                        ids.add(node.get("id").asLong());
+                    }
+                }
+
+                // Извлекаем admins.id
+                JsonNode adminsArray = rootNode.get("admins");
+                if (adminsArray != null && adminsArray.isArray()) {
+                    for (JsonNode node : adminsArray) {
+                        ids.add(node.get("id").asLong());
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return ids;
     }
 }
