@@ -1,19 +1,24 @@
 package com.example.app.controllers;
 
+import com.example.app.model.PersonDTO;
+import com.example.app.model.PersonTableDTO;
 import com.example.app.model.Project;
 
 import com.example.app.util.SessionManager;
 import com.example.app.util.requests.RequestsNeo4j;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,21 +27,32 @@ public class ProjectDetailsController {
     public AnchorPane projectPane;
 
     @FXML
+    public TableView<PersonTableDTO> teamTableView;
+
+    @FXML
+    public TableColumn<PersonTableDTO, String>  usernameColum;
+
+    @FXML
+    public TableColumn<PersonTableDTO, String>  roleColum;
+
+    @FXML
     private Label projectName;
 
     @FXML
     private TextField projectNameInputField;
 
-    @FXML
-    private ListView<String> teamListView;
-
-   private Project selectedProject;
-
+    private Project selectedProject;
 
     public void initialize() throws IOException, InterruptedException {
-        selectedProject= ProjectsController.getSelectedProject();
+        selectedProject = ProjectsController.getSelectedProject();
         projectName.setText(selectedProject.getName());
         projectNameInputField.setText(selectedProject.getName());
+
+        usernameColum.setCellValueFactory(new PropertyValueFactory<>("name"));
+        roleColum.setCellValueFactory(new PropertyValueFactory<>("role"));
+
+        usernameColum.setResizable(false);
+        roleColum.setResizable(false);
 
         renderMembers(selectedProject.getId());
     }
@@ -134,8 +150,22 @@ public class ProjectDetailsController {
     }
 
     private void renderMembers(long projectId) throws IOException, InterruptedException {
-        List<String> members = RequestsNeo4j.getAllMembersInProjectByProjectId(projectId);
-        assert members != null;
-        teamListView.setItems(FXCollections.observableList(members));
+        List<PersonDTO> members = RequestsNeo4j.getAllMembersInProjectByProjectId(projectId);
+        List<Long> personIds = RequestsNeo4j.getProjectById(projectId);
+        List<PersonTableDTO> memberTableDTOs = new ArrayList<>();
+
+        for (PersonDTO member : members) {
+            if (personIds.get(0) == member.getId()) {
+                memberTableDTOs.add(new PersonTableDTO(member.getName(), "Создатель"));
+            } else if (personIds.contains(member.getId())) {
+                memberTableDTOs.add(new PersonTableDTO(member.getName(), "Админ"));
+            } else {
+                memberTableDTOs.add(new PersonTableDTO(member.getName(), "Участник"));
+            }
+
+        }
+        ObservableList<PersonTableDTO> observableList = FXCollections.observableList(memberTableDTOs);
+
+        teamTableView.setItems(observableList);
     }
 }

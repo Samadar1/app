@@ -10,6 +10,7 @@
 <?import java.net.URL?>
 
 
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.app.controllers.ProjectDetailsController"
@@ -33,7 +34,12 @@
                 <VBox>
                     <Label text="Команда проекта " styleClass="section-title"/>
                     <VBox>
-                        <ListView fx:id="teamListView" prefHeight="200"/>
+                        <TableView fx:id="teamTableView" prefHeight="200">
+                            <columns>
+                                <TableColumn text="Пользователь" fx:id="usernameColum"/>
+                                <TableColumn text="Роль" fx:id="roleColum"/>
+                            </columns>
+                        </TableView>
                         <HBox>
                             <Button text="Добавить участника" styleClass="form-button" onAction="#clickedOnAddMember"/>
                             <Button text="Удалить участника" styleClass="form-button" onAction="#clickedOnDelMember"/>

@@ -1,5 +1,6 @@
 package com.example.app.util.requests;
 
+import com.example.app.model.PersonDTO;
 import com.example.app.model.Project;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -151,7 +152,7 @@ public class RequestsNeo4j {
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public static List<String> getAllMembersInProjectByProjectId(long projectId) throws IOException, InterruptedException {
+    public static List<PersonDTO> getAllMembersInProjectByProjectId(long projectId) throws IOException, InterruptedException {
         HttpRequest requestToCreate = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/v1/Project/members-of-project/" + projectId))
                 .header("Content-Type", "application/json")
@@ -163,7 +164,7 @@ public class RequestsNeo4j {
         ObjectMapper mapper = new ObjectMapper();
 
         if (response.statusCode() == 302) {
-            List<String> members = new ArrayList<>();
+            List<PersonDTO> members = new ArrayList<>();
 
             List<Map<String, Object>> membersList = mapper.readValue(
                     response.body(),
@@ -172,8 +173,10 @@ public class RequestsNeo4j {
             );
 
             for (Map<String, Object> member : membersList) {
+                long id = Long.parseLong(member.get("id").toString());
                 String name = member.get("name").toString();
-                members.add(name);
+
+                members.add(new PersonDTO(id, name));
             }
 
             return members;
@@ -183,8 +186,6 @@ public class RequestsNeo4j {
     }
 
     public static List<Long> getProjectById(long projectId) throws IOException, InterruptedException {
-        List<Long> personid = new ArrayList<>();
-
         HttpRequest requestToCreate = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/v1/Project/get-project/" + projectId))
                 .header("Content-Type", "application/json")
