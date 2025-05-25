@@ -12,6 +12,7 @@ import javafx.scene.layout.*;
 import com.example.app.model.Project;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -81,7 +82,7 @@ public class ProjectsController {
         });
     }
 
-    private void generateProjectCards(List<Project> projects) {
+    private void generateProjectCards(List<Project> projects) throws IOException, InterruptedException {
         int row = 0;
         int col = 0;
 
@@ -95,10 +96,23 @@ public class ProjectsController {
             Label label = new Label(project.getName());
             label.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill:#000;");
 
+            Label labelRole = new Label();
+            labelRole.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill:#000;");
+
+            List<Long> PersonIds = new ArrayList<>();
+            PersonIds = RequestsNeo4j.getProjectById(project.getId());
+            if (PersonIds.get(0) == SessionManager.getUserId()) {
+                labelRole.setText("Создатель");
+            } else if (PersonIds.contains(SessionManager.getUserId())) {
+                labelRole.setText("Админ");
+            } else {
+                labelRole.setText("Участник");
+            }
+
             Button button = getButton(project);
 
             card.setAlignment(javafx.geometry.Pos.CENTER);
-            card.getChildren().addAll(label, button);
+            card.getChildren().addAll(label, labelRole, button);
 
             // Добавляем на сетку
             projectGrid.add(card, col, row);
