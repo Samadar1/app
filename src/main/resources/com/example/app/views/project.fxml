@@ -18,27 +18,37 @@
         <URL value="@../styles/styles.css"/>
     </stylesheets>
 
-    <VBox spacing="10" style="-fx-padding: 10;">
-        <VBox spacing="10" style="">
-            <Label text="" styleClass="section-title" fx:id="projectName"/>
-        </VBox>
-        <VBox>
-            <TextField fx:id="projectNameInputField" promptText="Введите новое название проекта: " styleClass="form-control"/>
-            <Label text="Команда проекта " styleClass="section-title"/>
-            <VBox>
-                <ListView fx:id="teamListView" prefHeight="200"/>
-                <HBox>
-                    <Button text="Добавить участника" styleClass="form-button" onAction="#clickedOnAddMember"/>
-                    <Button text="Удалить участника" styleClass="form-button" onAction="#clickedOnDelMember"/>
-                </HBox>
+    <TabPane>
+        <Tab text="Общее" closable="false">
+            <VBox spacing="10" style="-fx-padding: 10">
+                <Label text="" styleClass="section-title" fx:id="projectName"/>
+                <TextField fx:id="projectNameInputField" promptText="Введите новое название проекта: " styleClass="form-control"/>
             </VBox>
+        </Tab>
+        <Tab text="Команда" closable="false">
+            <VBox spacing="10" style="-fx-padding: 10">
+                <VBox>
+                    <Label text="Команда проекта " styleClass="section-title"/>
+                    <VBox>
+                        <ListView fx:id="teamListView" prefHeight="200"/>
+                        <HBox>
+                            <Button text="Добавить участника" styleClass="form-button" onAction="#clickedOnAddMember"/>
+                            <Button text="Удалить участника" styleClass="form-button" onAction="#clickedOnDelMember"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </Tab>
+        <Tab text="Настройки" closable="false">
             <Label text="Настройки" styleClass="section-title"/>
-            <Button text="Удалить проект" styleClass="form-button, form-button-danger" onAction="#clickedOnDelProject"/>
-        </VBox>
-        <HBox styleClass="project-control-buttons">
-            <Button text="Сохранить" styleClass="form-button, form-button-success" onAction="#clickedOnSaveProject"/>
-            <Button text="Назад" styleClass="form-button" onAction="#clickedOnBack"/>
-        </HBox>
-    </VBox>
+            <VBox spacing="10" style="-fx-padding: 10">
+                <HBox styleClass="project-control-buttons">
+                    <Button text="Сохранить" styleClass="form-button, form-button-success" onAction="#clickedOnSaveProject"/>
+                    <Button text="Назад" styleClass="form-button" onAction="#clickedOnBack"/>
+                </HBox>
+                <Button text="Удалить проект" styleClass="form-button, form-button-danger" onAction="#clickedOnDelProject"/>
+            </VBox>
+        </Tab>
+    </TabPane>
 
 </AnchorPane>
