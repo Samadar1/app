@@ -4,6 +4,7 @@ import com.example.app.model.PersonDTO;
 import com.example.app.model.PersonTableDTO;
 import com.example.app.model.Project;
 
+import com.example.app.util.Alerts;
 import com.example.app.util.SessionManager;
 import com.example.app.util.requests.RequestsNeo4j;
 import javafx.collections.FXCollections;
@@ -74,8 +75,8 @@ public class ProjectDetailsController {
     public void clickedOnAddMember(ActionEvent actionEvent) {
 
         Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Новый проект");
-        dialog.setHeaderText("Введите название проекта");
+        dialog.setTitle("Добавление участника");
+        dialog.setHeaderText("Введите имя пользователя");
 
         // Кнопки
         ButtonType saveButtonType = new ButtonType("Добавить", ButtonBar.ButtonData.OK_DONE);
@@ -127,8 +128,63 @@ public class ProjectDetailsController {
     }
 
     @FXML
-    public void clickedOnDelMember(ActionEvent actionEvent) {
-        showAlert("Test", "clickedOnDelMember");
+    public void clickedOnDelMember(ActionEvent actionEvent) throws IOException, InterruptedException {
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Удаление участника");
+        dialog.setHeaderText("Выберите учасника, которого хотите удалить");
+
+        // Кнопки
+        ButtonType saveButtonType = new ButtonType("Удалить", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
+
+        // Поле ввода
+        ComboBox<String> comboBox = new ComboBox<>();
+        List<PersonDTO> members = RequestsNeo4j.getAllMembersInProjectByProjectId(selectedProject.getId());
+        for (PersonDTO member : members) {
+            comboBox.getItems().add(member.getName());
+        }
+
+        VBox content = new VBox(10, comboBox);
+        dialog.getDialogPane().setContent(content);
+
+        // Преобразование результата
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                return comboBox.getValue();
+            }
+            return null;
+        });
+
+        // Показываем диалог и обрабатываем результат
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(memberName -> {
+            long nodeId;
+            try {
+                nodeId = RequestsNeo4j.getPersonIdByUserName(memberName);
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            int statusCode;
+            if (nodeId != SessionManager.getUserId()) {
+                try {
+                    statusCode = RequestsNeo4j.deleteMembersInProject(selectedProject.getId(), nodeId, SessionManager.getUserId());
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (statusCode == 200) {
+                    Alerts.alert("Уведомление", "Пользователь успешно удалён", Alert.AlertType.INFORMATION);
+                } else {
+                    Alerts.alert("Уведомление", "У вас нет прав что бы удалить данного пользователя", Alert.AlertType.INFORMATION);
+                }
+            } else {
+                Alerts.alert("Уведомление", "Вы не можете удалить сами себя", Alert.AlertType.INFORMATION);
+            }
+        });
+        renderMembers(selectedProject.getId());
     }
 
     @FXML
