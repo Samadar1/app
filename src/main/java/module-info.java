@@ -3,6 +3,7 @@ module com.example.app {
     requires java.net.http;
     requires com.fasterxml.jackson.databind;
     requires org.controlsfx.controls;
+    requires java.desktop;
 
 
     opens com.example.app.controllers to javafx.fxml;

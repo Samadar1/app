@@ -152,7 +152,14 @@ public class RequestsNeo4j {
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    /**
+     * @param projectId
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static List<PersonDTO> getAllMembersInProjectByProjectId(long projectId) throws IOException, InterruptedException {
+        List<PersonDTO> result = null;
         HttpRequest requestToCreate = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/v1/Project/members-of-project/" + projectId))
                 .header("Content-Type", "application/json")
@@ -167,9 +174,8 @@ public class RequestsNeo4j {
             List<PersonDTO> members = new ArrayList<>();
 
             List<Map<String, Object>> membersList = mapper.readValue(
-                    response.body(),
-                    new TypeReference<List<Map<String, Object>>>() {
-                    }
+                response.body(),
+                new TypeReference<List<Map<String, Object>>>() {}
             );
 
             for (Map<String, Object> member : membersList) {
@@ -179,10 +185,10 @@ public class RequestsNeo4j {
                 members.add(new PersonDTO(id, name));
             }
 
-            return members;
+            result = members;
         }
 
-        return null;
+        return result;
     }
 
     public static List<Long> getProjectById(long projectId) throws IOException, InterruptedException {
