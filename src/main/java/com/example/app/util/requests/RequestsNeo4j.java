@@ -228,4 +228,26 @@ public class RequestsNeo4j {
         }
         return ids;
     }
+
+    public static int deleteMembersInProject(long projectId, long nodeId, long issuerId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("projectId", projectId);
+        rootNode.put("nodeId", nodeId);
+        rootNode.put("issuerId", issuerId);
+        String json = mapper.writeValueAsString(rootNode);
+
+
+        HttpRequest requestToCreate = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Person/dropProject"))
+                .header("Content-Type", "application/json")
+                .method("DELETE", HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
+
+        return response.statusCode();
+    }
 }
+
