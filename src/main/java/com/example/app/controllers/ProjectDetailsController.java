@@ -4,6 +4,7 @@ import com.example.app.model.PersonDTO;
 import com.example.app.model.PersonTableDTO;
 import com.example.app.model.Project;
 
+import com.example.app.model.TaskTableDTO;
 import com.example.app.util.Alerts;
 import com.example.app.util.SessionManager;
 import com.example.app.util.requests.RequestsNeo4j;
@@ -20,12 +21,23 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class ProjectDetailsController {
     @FXML
     public AnchorPane projectPane;
+
+    @FXML
+    public TableView<TaskTableDTO> taskTableView;
+
+    @FXML
+    public TableColumn<TaskTableDTO, String> openColum;
+
+    @FXML
+    public TableColumn<TaskTableDTO, String> inProgressColum;
+    
+    @FXML
+    public TableColumn<TaskTableDTO, String> closeColum;
 
     @FXML
     public TableView<PersonTableDTO> teamTableView;
@@ -46,7 +58,13 @@ public class ProjectDetailsController {
     public Tab setting;
 
     @FXML
+    public Tab taskTab;
+
+    @FXML
     public TabPane tabPane;
+
+    @FXML
+    public VBox teamPage;
 
     @FXML
     private Label projectName;

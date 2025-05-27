@@ -29,6 +29,7 @@
                 <TextField fx:id="projectNameInputField" promptText="Введите новое название проекта: " styleClass="form-control"/>
             </VBox>
         </Tab>
+
         <Tab text="Команда" closable="false">
             <VBox spacing="10" style="-fx-padding: 10">
                 <VBox>
@@ -48,6 +49,22 @@
                 </VBox>
             </VBox>
         </Tab>
+
+        <Tab text="Задачи" closable="false" fx:id="taskTab">
+            <VBox>
+                <Label text="Задачи в проекте" styleClass="section-title"/>
+                <VBox>
+                    <TableView fx:id="taskTableView" prefHeight="200">
+                        <columns>
+                            <TableColumn text="Open" fx:id="openColum"/>
+                            <TableColumn text="InProgress" fx:id="inProgressColum"/>
+                            <TableColumn text="Close" fx:id="closeColum"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </Tab>
+
         <Tab text="Настройки" closable="false" fx:id="setting">
             <Label text="Настройки" styleClass="section-title"/>
             <VBox spacing="10" style="-fx-padding: 10">
