@@ -2,9 +2,9 @@ package com.example.app.controllers;
 
 import com.example.app.model.DTO.PersonDTO;
 import com.example.app.model.DTO.PersonTableDTO;
-import com.example.app.model.DTO.TaskTableDTO;
 import com.example.app.model.Project;
 
+import com.example.app.model.Task;
 import com.example.app.util.Alerts;
 import com.example.app.util.SessionManager;
 import com.example.app.util.requests.RequestsNeo4j;
@@ -57,25 +57,25 @@ public class ProjectDetailsController {
     public TabPane tabPane;
 
     @FXML
-    public ListView openTasks;
+    public ListView<Task> openTasks;
 
     @FXML
-    public TableView<TaskTableDTO> taskInProgressTableView;
+    public TableView<Task> taskInProgressTableView;
 
     @FXML
-    public TableColumn<TaskTableDTO, String> taskNameInProgress;
+    public TableColumn<Task , String> taskNameInProgress;
 
     @FXML
-    public TableColumn<TaskTableDTO, String> userNameInProgress;
+    public TableColumn<Task , String> userNameInProgress;
 
     @FXML
-    public TableView<TaskTableDTO> taskClosedTableView;
+    public TableView<Task> taskClosedTableView;
 
     @FXML
-    public TableColumn<TaskTableDTO, String> taskNameClose;
+    public TableColumn<Task , String> taskNameClose;
 
     @FXML
-    public TableColumn<TaskTableDTO, String> userNameClose;
+    public TableColumn<Task , String> userNameClose;
 
     @FXML
     private Label projectName;
@@ -89,11 +89,18 @@ public class ProjectDetailsController {
         selectedProject = ProjectsController.getSelectedProject();
         projectName.setText(selectedProject.getName());
         projectNameInputField.setText(selectedProject.getName());
+
         usernameColum.setCellValueFactory(new PropertyValueFactory<>("name"));
         roleColum.setCellValueFactory(new PropertyValueFactory<>("role"));
 
         usernameColum.setResizable(false);
         roleColum.setResizable(false);
+
+        taskNameInProgress.setCellValueFactory(new PropertyValueFactory<>("name"));
+        userNameInProgress.setCellValueFactory(new PropertyValueFactory<>("memberName"));
+
+        taskNameInProgress.setResizable(false);
+        userNameInProgress.setResizable(false);
 
         ContextMenu contextMenu = new ContextMenu();
 
@@ -108,6 +115,7 @@ public class ProjectDetailsController {
         if (!personIds.contains(SessionManager.getUserId())) {
             addMembers.setVisible(false);
             tabPane.getTabs().remove(setting);
+            createTask.setVisible(false);
         }
 
         if (personIds.contains(SessionManager.getUserId())) {
@@ -188,6 +196,62 @@ public class ProjectDetailsController {
         }
 
         renderMembers(selectedProject.getId());
+
+        ContextMenu contextMenu2 = new ContextMenu();
+
+        MenuItem setMember = new MenuItem("Назначить исполнителя");
+        MenuItem takeTask = new MenuItem("Взять задачу");
+        MenuItem deleteTask = new MenuItem("Удалить");
+
+        contextMenu2.getItems().addAll(setMember, takeTask, deleteTask);
+
+        renderTasksListView(selectedProject.getId());
+
+        openTasks.setCellFactory(lv -> new ListCell<>(){
+            @Override
+            protected void updateItem(Task task, boolean empty) {
+                super.updateItem(task, empty);
+                if (empty || task == null) {
+                    setText(null);
+                    setOnMouseClicked(null);
+                } else {
+                    setText(task.getName());
+                    setOnMouseClicked(event -> {
+                        if (event.getButton() == MouseButton.SECONDARY && !isEmpty()) {
+
+                            // Получаем текущий объект Task
+                            Task selectedTask = getItem();
+
+                            // Обновляем действия контекстного меню
+                            setMember.setOnAction(e -> {
+
+                            });
+
+                            takeTask.setOnAction(e -> {
+                                try {
+                                    RequestsNeo4j.setTaskMember(SessionManager.getUserId(), selectedTask.getId());
+                                    renderTasksListView(selectedProject.getId());
+                                    renderInProgressTasksTableView(selectedProject.getId());
+                                } catch (IOException | InterruptedException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                System.out.println(selectedTask.getName());
+                                System.out.println(selectedTask.getId());
+                            });
+                            deleteTask.setOnAction(e -> {
+
+                            });
+
+                            if (personIds.contains(SessionManager.getUserId())){
+                                contextMenu2.show(openTasks, event.getScreenX(), event.getScreenY());
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        renderInProgressTasksTableView(selectedProject.getId());
     }
 
     @FXML
@@ -309,6 +373,7 @@ public class ProjectDetailsController {
                 long taskId = RequestsNeo4j.createTask(task.get(0),task.get(1));
                 if (taskId != -1) {
                     RequestsNeo4j.connectTaskToProject(selectedProject.getId(), taskId);
+                    renderTasksListView(selectedProject.getId());
                     Alerts.alert("Добавление задачи", "задача добавленна", Alert.AlertType.INFORMATION);
                 }
             } catch (IOException | InterruptedException e) {
@@ -343,5 +408,23 @@ public class ProjectDetailsController {
         ObservableList<PersonTableDTO> observableList = FXCollections.observableList(memberTableDTOs);
 
         teamTableView.setItems(observableList);
+    }
+
+    private void renderTasksListView(long projectId) throws IOException, InterruptedException {
+        openTasks.getItems().clear();
+        List<Task> tasks = RequestsNeo4j.getAllOpenTasksByProjectId(projectId);
+        openTasks.getItems().addAll(tasks);
+    }
+
+    private void renderInProgressTasksTableView(long projectId) throws IOException, InterruptedException {
+        List<Task> tasks = RequestsNeo4j.getAllInProgressTasksByProjectId(projectId);
+        ObservableList<Task> tasklist = FXCollections.observableArrayList(tasks);
+        taskInProgressTableView.setItems(tasklist);
+    }
+    
+    private void renderCloseTasksTableView(long projectId) throws IOException, InterruptedException {
+        List<Task> tasks = RequestsNeo4j.getAllClosedTasksByProjectId(projectId);
+        ObservableList<Task> tasklist = FXCollections.observableArrayList(tasks);
+        taskClosedTableView.setItems(tasklist);
     }
 }

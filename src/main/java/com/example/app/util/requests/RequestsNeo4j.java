@@ -2,6 +2,7 @@ package com.example.app.util.requests;
 
 import com.example.app.model.DTO.PersonDTO;
 import com.example.app.model.Project;
+import com.example.app.model.Task;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +21,7 @@ public class    RequestsNeo4j {
 
     public static long getPersonIdByUserName(String username) throws IOException, InterruptedException {
         HttpRequest requestNeo4j = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/Person/get-person-by-name/"+ username))
+                .uri(URI.create("http://localhost:8080/api/v1/Person/get-person-by-name/" + username))
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
@@ -31,7 +32,8 @@ public class    RequestsNeo4j {
 
             List<Map<String, Object>> userList = objectMapper.readValue(
                     response.body(),
-                    new TypeReference<List<Map<String, Object>>>() {}
+                    new TypeReference<List<Map<String, Object>>>() {
+                    }
             );
 
             Map<String, Object> user = userList.get(0);
@@ -174,8 +176,9 @@ public class    RequestsNeo4j {
             List<PersonDTO> members = new ArrayList<>();
 
             List<Map<String, Object>> membersList = mapper.readValue(
-                response.body(),
-                new TypeReference<List<Map<String, Object>>>() {}
+                    response.body(),
+                    new TypeReference<List<Map<String, Object>>>() {
+                    }
             );
 
             for (Map<String, Object> member : membersList) {
@@ -321,5 +324,144 @@ public class    RequestsNeo4j {
 
         client.send(requests, HttpResponse.BodyHandlers.ofString());
     }
-}
 
+    public static List<Task> getAllOpenTasksByProjectId(long projectId) throws IOException, InterruptedException {
+        HttpRequest requests = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/get-open-tasks-of-project/" + projectId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(requests, HttpResponse.BodyHandlers.ofString());
+
+        List<Task> result = null;
+        ObjectMapper mapper = new ObjectMapper();
+        List<Task> tasklist = new ArrayList<>();
+
+        if (response.statusCode() == 302) {
+            List<Map<String, Object>> taskrequsts = mapper.readValue(
+                    response.body(),
+                    new TypeReference<List<Map<String, Object>>>() {
+                    }
+            );
+
+            for (Map<String, Object> task : taskrequsts) {
+                long id = Long.parseLong(task.get("id").toString());
+                String name = task.get("title").toString();
+                String description = task.get("content").toString();
+
+
+                tasklist.add(new Task(id, name, description));
+            }
+
+            result = tasklist;
+        }
+        return result;
+    }
+
+    public static List<Task> getAllInProgressTasksByProjectId(long projectId) throws IOException, InterruptedException {
+        HttpRequest requests = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/get-in-progress-tasks-of-project/" + projectId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(requests, HttpResponse.BodyHandlers.ofString());
+
+        List<Task> result = null;
+        ObjectMapper mapper = new ObjectMapper();
+        List<Task> tasklist = new ArrayList<>();
+
+        if (response.statusCode() == 302) {
+            List<Map<String, Object>> taskrequests = mapper.readValue(
+                response.body(),
+                    new TypeReference<List<Map<String, Object>>>() {
+                }
+            );
+
+            for (Map<String, Object> task : taskrequests) {
+                long id = Long.parseLong(task.get("id").toString());
+                String name = task.get("title").toString();
+                String description = task.get("content").toString();
+
+                String memberName = getTaskMember(id);
+                tasklist.add(new Task(id, name, description, memberName));
+            }
+
+            result = tasklist;
+        }
+        return result;
+    }
+
+    public static List<Task> getAllClosedTasksByProjectId(long projectId) throws IOException, InterruptedException {
+        HttpRequest requests = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/get-closed-tasks-of-project/" + projectId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(requests, HttpResponse.BodyHandlers.ofString());
+
+        List<Task> result = null;
+        ObjectMapper mapper = new ObjectMapper();
+        List<Task> tasklist = new ArrayList<>();
+
+        if (response.statusCode() == 302) {
+            List<Map<String, Object>> taskrequests = mapper.readValue(
+                    response.body(),
+                    new TypeReference<List<Map<String, Object>>>() {
+                    }
+            );
+
+            for (Map<String, Object> task : taskrequests) {
+                long id = Long.parseLong(task.get("id").toString());
+                String name = task.get("title").toString();
+                String description = task.get("content").toString();
+                String memberName = getTaskMember(id);
+                tasklist.add(new Task(id, name, description, memberName));
+            }
+            result = tasklist;
+        }
+
+        return result;
+    }
+
+    public static void setTaskMember(long personId, long taskId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("personId", personId);
+        rootNode.put("taskId", taskId);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Task/assign"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static String getTaskMember(long taskId) throws IOException, InterruptedException {
+        HttpRequest requests = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Task/get-responsible-for-task/" + taskId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(requests, HttpResponse.BodyHandlers.ofString());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        List<Map<String, Object>> userList = objectMapper.readValue(
+                response.body(),
+                new TypeReference<List<Map<String, Object>>>() {
+                }
+        );
+
+        Map<String, Object> user = userList.get(0);
+        return (String) user.get("name");
+    }
+
+}
