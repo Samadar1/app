@@ -283,5 +283,43 @@ public class    RequestsNeo4j {
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
+    public static long createTask(String taskName, String taskDescription) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("title", taskName);
+        rootNode.put("content", taskDescription);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest requests = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Task/create"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(requests, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 201) {
+            return new ObjectMapper().readTree(response.body()).get("id").asLong();
+        }
+        return -1;
+    }
+
+    public static void connectTaskToProject(long projectId, long taskId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("projectId", projectId);
+        rootNode.put("taskId", taskId);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest requests = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/contains"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(requests, HttpResponse.BodyHandlers.ofString());
+    }
 }
 

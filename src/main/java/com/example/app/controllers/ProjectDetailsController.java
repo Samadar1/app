@@ -2,6 +2,7 @@ package com.example.app.controllers;
 
 import com.example.app.model.DTO.PersonDTO;
 import com.example.app.model.DTO.PersonTableDTO;
+import com.example.app.model.DTO.TaskTableDTO;
 import com.example.app.model.Project;
 
 import com.example.app.util.Alerts;
@@ -59,22 +60,22 @@ public class ProjectDetailsController {
     public ListView openTasks;
 
     @FXML
-    public TableView taskInProgressTableView;
+    public TableView<TaskTableDTO> taskInProgressTableView;
 
     @FXML
-    public TableColumn taskNameInProgress;
+    public TableColumn<TaskTableDTO, String> taskNameInProgress;
 
     @FXML
-    public TableColumn userNameInProgress;
+    public TableColumn<TaskTableDTO, String> userNameInProgress;
 
     @FXML
-    public TableView taskClosedTableView;
+    public TableView<TaskTableDTO> taskClosedTableView;
 
     @FXML
-    public TableColumn taskNameClose;
+    public TableColumn<TaskTableDTO, String> taskNameClose;
 
     @FXML
-    public TableColumn userNameClose;
+    public TableColumn<TaskTableDTO, String> userNameClose;
 
     @FXML
     private Label projectName;
@@ -270,14 +271,50 @@ public class ProjectDetailsController {
 
     @FXML
     public void clickedOnCreateTask(ActionEvent actionEvent) {
-    }
+        Dialog<List<String>> dialog = new Dialog<>();
+        dialog.setTitle("Добавление задачи");
+        dialog.setHeaderText("Введите название и описание задачи");
 
-    @FXML
-    public void clickedOnGetTask(ActionEvent actionEvent) {
-    }
+        // Кнопки
+        ButtonType saveButtonType = new ButtonType("Добавить", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
-    @FXML
-    public void clickedOnDelTask(ActionEvent actionEvent) {
+        // Поле ввода
+        TextField textFieldName = new TextField();
+        textFieldName.setPromptText("Название задачи");
+        TextField textFieldDescription = new TextField();
+        textFieldDescription.setPromptText("Описание задачи");
+
+
+        VBox content = new VBox(10, textFieldName, textFieldDescription);
+        dialog.getDialogPane().setContent(content);
+
+        // Преобразование результата
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                List<String> task= new ArrayList<>();
+                task.add(textFieldName.getText());
+                task.add(textFieldDescription.getText());
+                return task;
+            }
+            return null;
+        });
+
+        // Показываем диалог и обрабатываем результат
+        Optional<List<String>> result = dialog.showAndWait();
+
+        result.ifPresent(task -> {
+            try {
+                long taskId = RequestsNeo4j.createTask(task.get(0),task.get(1));
+                if (taskId != -1) {
+                    RequestsNeo4j.connectTaskToProject(selectedProject.getId(), taskId);
+                    Alerts.alert("Добавление задачи", "задача добавленна", Alert.AlertType.INFORMATION);
+                }
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void showAlert(String title, String message) {
