@@ -12,4 +12,6 @@ module com.example.app {
     exports com.example.app;
     exports com.example.app.model to javafx.base;
     opens com.example.app.model to javafx.base;
+    exports com.example.app.model.DTO to javafx.base;
+    opens com.example.app.model.DTO to javafx.base;
 }
