@@ -37,13 +37,12 @@
                     <VBox>
                         <TableView fx:id="teamTableView" prefHeight="200">
                             <columns>
-                                <TableColumn text="Пользователь" fx:id="usernameColum"/>
+                                <TableColumn text="Пользователь" fx:id="usernameColum" prefWidth="300"/>
                                 <TableColumn text="Роль" fx:id="roleColum"/>
                             </columns>
                         </TableView>
                         <HBox>
                             <Button text="Добавить участника" styleClass="form-button" onAction="#clickedOnAddMember" fx:id="addMembers"/>
-                            <Button text="Удалить участника" styleClass="form-button" onAction="#clickedOnDelMember" fx:id="delMembers"/>
                         </HBox>
                     </VBox>
                 </VBox>
@@ -61,6 +60,11 @@
                             <TableColumn text="Close" fx:id="closeColum"/>
                         </columns>
                     </TableView>
+                    <HBox>
+                        <Button text="Добавить задачу" styleClass="form-button" onAction="#clickedOnCreateTask" fx:id="createTask"/>
+                        <Button text="Взять задачу" styleClass="form-button" onAction="#clickedOnGetTask" fx:id="getTask"/>
+                        <Button text="Удалить задачу" styleClass="form-button" onAction="#clickedOnDelTask" fx:id="delTask"/>
+                    </HBox>
                 </VBox>
             </VBox>
         </Tab>

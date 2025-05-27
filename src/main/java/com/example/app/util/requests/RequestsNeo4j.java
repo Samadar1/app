@@ -2,6 +2,7 @@ package com.example.app.util.requests;
 
 import com.example.app.model.PersonDTO;
 import com.example.app.model.Project;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -146,7 +147,7 @@ public class RequestsNeo4j {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/v1/Person/updateSkillSetById"))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonOutput))
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonOutput))
                 .build();
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -248,6 +249,40 @@ public class RequestsNeo4j {
         HttpResponse<String> response = client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
 
         return response.statusCode();
+    }
+
+    public static void upRolePersonInProject(long projectId, long personId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("projectId", projectId);
+        rootNode.put("personId", personId);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/assignAdmin"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static void downRolePersonInProject(long projectId, long personId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("projectId", projectId);
+        rootNode.put("personId", personId);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Project/assignContributor"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }
 
