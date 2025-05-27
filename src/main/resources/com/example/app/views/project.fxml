@@ -22,7 +22,7 @@
         <URL value="@../styles/styles.css"/>
     </stylesheets>
 
-    <TabPane>
+    <TabPane fx:id="tabPane">
         <Tab text="Общее" closable="false">
             <VBox spacing="10" style="-fx-padding: 10">
                 <Label text="" styleClass="section-title" fx:id="projectName"/>
@@ -41,14 +41,14 @@
                             </columns>
                         </TableView>
                         <HBox>
-                            <Button text="Добавить участника" styleClass="form-button" onAction="#clickedOnAddMember"/>
-                            <Button text="Удалить участника" styleClass="form-button" onAction="#clickedOnDelMember"/>
+                            <Button text="Добавить участника" styleClass="form-button" onAction="#clickedOnAddMember" fx:id="addMembers"/>
+                            <Button text="Удалить участника" styleClass="form-button" onAction="#clickedOnDelMember" fx:id="delMembers"/>
                         </HBox>
                     </VBox>
                 </VBox>
             </VBox>
         </Tab>
-        <Tab text="Настройки" closable="false">
+        <Tab text="Настройки" closable="false" fx:id="setting">
             <Label text="Настройки" styleClass="section-title"/>
             <VBox spacing="10" style="-fx-padding: 10">
                 <HBox styleClass="project-control-buttons">

@@ -8,7 +8,6 @@ import com.example.app.util.Alerts;
 import com.example.app.util.SessionManager;
 import com.example.app.util.requests.RequestsNeo4j;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +20,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ProjectDetailsController {
@@ -37,6 +37,18 @@ public class ProjectDetailsController {
     public TableColumn<PersonTableDTO, String>  roleColum;
 
     @FXML
+    public Button addMembers;
+
+    @FXML
+    public Button delMembers;
+
+    @FXML
+    public Tab setting;
+
+    @FXML
+    public TabPane tabPane;
+
+    @FXML
     private Label projectName;
 
     @FXML
@@ -48,12 +60,18 @@ public class ProjectDetailsController {
         selectedProject = ProjectsController.getSelectedProject();
         projectName.setText(selectedProject.getName());
         projectNameInputField.setText(selectedProject.getName());
-
         usernameColum.setCellValueFactory(new PropertyValueFactory<>("name"));
         roleColum.setCellValueFactory(new PropertyValueFactory<>("role"));
 
         usernameColum.setResizable(false);
         roleColum.setResizable(false);
+
+        List<Long> personIds = RequestsNeo4j.getProjectById(selectedProject.getId());
+        if (!personIds.contains(SessionManager.getUserId())) {
+            addMembers.setVisible(false);
+            delMembers.setVisible(false);
+            tabPane.getTabs().remove(setting);
+        }
 
         renderMembers(selectedProject.getId());
     }
