@@ -29,7 +29,6 @@
                 <TextField fx:id="projectNameInputField" promptText="Введите новое название проекта: " styleClass="form-control"/>
             </VBox>
         </Tab>
-
         <Tab text="Команда" closable="false">
             <VBox spacing="10" style="-fx-padding: 10">
                 <VBox>
@@ -50,23 +49,41 @@
         </Tab>
 
         <Tab text="Задачи" closable="false" fx:id="taskTab">
-            <VBox>
-                <Label text="Задачи в проекте" styleClass="section-title"/>
+            <ScrollPane prefHeight="500">
                 <VBox>
-                    <TableView fx:id="taskTableView" prefHeight="200">
-                        <columns>
-                            <TableColumn text="Open" fx:id="openColum"/>
-                            <TableColumn text="InProgress" fx:id="inProgressColum"/>
-                            <TableColumn text="Close" fx:id="closeColum"/>
-                        </columns>
-                    </TableView>
-                    <HBox>
-                        <Button text="Добавить задачу" styleClass="form-button" onAction="#clickedOnCreateTask" fx:id="createTask"/>
-                        <Button text="Взять задачу" styleClass="form-button" onAction="#clickedOnGetTask" fx:id="getTask"/>
-                        <Button text="Удалить задачу" styleClass="form-button" onAction="#clickedOnDelTask" fx:id="delTask"/>
-                    </HBox>
+                    <Label text="Задачи в проекте" styleClass="section-title"/>
+                    <VBox>
+                        <Label text="Текущие зачадачи" styleClass="section-title"/>
+                        <ListView fx:id="openTasks">
+
+                        </ListView>
+
+                        <HBox>
+                            <Button text="Добавить задачу" styleClass="form-button" onAction="#clickedOnCreateTask" fx:id="createTask"/>
+                        </HBox>
+
+                        <Label text="Задачи в работе" styleClass="section-title"/>
+
+                        <TableView fx:id="taskInProgressTableView" prefHeight="200">
+                            <columns>
+                                <TableColumn text="Задача" fx:id="taskNameInProgress"/>
+                                <TableColumn text="Отвественный" fx:id="userNameInProgress"/>
+                            </columns>
+                        </TableView>
+
+                        <Label text="Завершённые задачи" styleClass="section-title"/>
+
+                        <TableView fx:id="taskClosedTableView" prefHeight="200">
+                            <columns>
+                                <TableColumn text="Задача" fx:id="taskNameClose"/>
+                                <TableColumn text="Отвественный" fx:id="userNameClose"/>
+                            </columns>
+                        </TableView>
+
+
+                    </VBox>
                 </VBox>
-            </VBox>
+            </ScrollPane>
         </Tab>
 
         <Tab text="Настройки" closable="false" fx:id="setting">

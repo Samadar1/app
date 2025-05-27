@@ -1,8 +1,7 @@
 package com.example.app.util.requests;
 
-import com.example.app.model.PersonDTO;
+import com.example.app.model.DTO.PersonDTO;
 import com.example.app.model.Project;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
 
-public class RequestsNeo4j {
+public class    RequestsNeo4j {
     private static final HttpClient client = HttpClient.newHttpClient();
 
     public static long getPersonIdByUserName(String username) throws IOException, InterruptedException {

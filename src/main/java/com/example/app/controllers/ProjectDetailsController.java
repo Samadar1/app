@@ -1,10 +1,9 @@
 package com.example.app.controllers;
 
-import com.example.app.model.PersonDTO;
-import com.example.app.model.PersonTableDTO;
+import com.example.app.model.DTO.PersonDTO;
+import com.example.app.model.DTO.PersonTableDTO;
 import com.example.app.model.Project;
 
-import com.example.app.model.TaskTableDTO;
 import com.example.app.util.Alerts;
 import com.example.app.util.SessionManager;
 import com.example.app.util.requests.RequestsNeo4j;
@@ -28,18 +27,6 @@ import java.util.Optional;
 public class ProjectDetailsController {
     @FXML
     public AnchorPane projectPane;
-
-    @FXML
-    public TableView<TaskTableDTO> taskTableView;
-
-    @FXML
-    public TableColumn<TaskTableDTO, String> openColum;
-
-    @FXML
-    public TableColumn<TaskTableDTO, String> inProgressColum;
-
-    @FXML
-    public TableColumn<TaskTableDTO, String> closeColum;
 
     @FXML
     public TableView<PersonTableDTO> teamTableView;
@@ -66,13 +53,28 @@ public class ProjectDetailsController {
     public Tab setting;
 
     @FXML
-    public Tab taskTab;
-
-    @FXML
     public TabPane tabPane;
 
     @FXML
-    public VBox teamPage;
+    public ListView openTasks;
+
+    @FXML
+    public TableView taskInProgressTableView;
+
+    @FXML
+    public TableColumn taskNameInProgress;
+
+    @FXML
+    public TableColumn userNameInProgress;
+
+    @FXML
+    public TableView taskClosedTableView;
+
+    @FXML
+    public TableColumn taskNameClose;
+
+    @FXML
+    public TableColumn userNameClose;
 
     @FXML
     private Label projectName;
