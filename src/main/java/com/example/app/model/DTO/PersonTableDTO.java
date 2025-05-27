@@ -1,6 +1,5 @@
-package com.example.app.model;
+package com.example.app.model.DTO;
 
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class PersonTableDTO {
