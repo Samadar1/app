@@ -84,6 +84,7 @@ public class ProjectDetailsController {
     private TextField projectNameInputField;
 
     private Project selectedProject;
+    private static Task selectedTask;
 
     public void initialize() throws IOException, InterruptedException {
         selectedProject = ProjectsController.getSelectedProject();
@@ -216,10 +217,14 @@ public class ProjectDetailsController {
                 } else {
                     setText(task.getName());
                     setOnMouseClicked(event -> {
+                        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                            selectedTask = getItem();
+                            renderTaskPane(selectedTask);
+                        }
                         if (event.getButton() == MouseButton.SECONDARY && !isEmpty()) {
 
                             // Получаем текущий объект Task
-                            Task selectedTask = getItem();
+                            selectedTask = getItem();
 
                             // Обновляем действия контекстного меню
                             setMember.setOnAction(e -> {
@@ -460,5 +465,22 @@ public class ProjectDetailsController {
             ObservableList<Task> tasklist = FXCollections.observableArrayList(tasks);
             taskClosedTableView.setItems(tasklist);
         }
+    }
+
+    private void renderTaskPane(Task task) {
+        selectedTask = task;
+        try {
+            // Используем FXMLLoader для загрузки FXML и получения контроллера
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/app/views/task.fxml"));
+            AnchorPane newView = loader.load();
+            // Обновляем содержимое
+            projectPane.getChildren().setAll(newView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Task getSelectedTask() {
+        return selectedTask;
     }
 }

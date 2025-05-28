@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.*?>
+<?import java.net.URL?>
+
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.app.controllers.TaskController"
+            fx:id="taskPane">
+
+    <stylesheets>
+        <URL value="@../styles/main.css"/>
+        <URL value="@../styles/styles.css"/>
+    </stylesheets>
+
+    <VBox spacing="10" style="-fx-padding: 10;">
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="" styleClass="section-title" fx:id="labelNameTask"/>
+        </VBox>
+
+        <VBox>
+            <Label text="Описание задачи" styleClass="section-title"/>
+        </VBox>
+
+        <StackPane style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;" prefWidth="200">
+            <Label fx:id="description" wrapText="true" style="-fx-padding: 5 10;"/>
+        </StackPane>
+        <HBox>
+            <Button text="Сохранить" styleClass="form-button, form-button-success" onAction="#clickedOnSaveTask"/>
+            <Button text="Удалить" styleClass="form-button,  form-button-danger" onAction="#clickedOnDelTask"/>
+            <Button text="Вернуться" styleClass="form-button" onAction="#clickedOnBack"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

@@ -27,18 +27,6 @@
 
         <VBox>
             <Button text="Создать новый проект" styleClass="form-button" onAction="#clickedOnCreateProject"/>
-            <!-- Место для поля ввода -->
-            <fx:define>
-                <TextField fx:id="inputField" promptText="Введите что-нибудь..." visible="false" managed="false" />
-            </fx:define>
-
-            <!-- Пространство между кнопкой и полем -->
-            <Pane prefHeight="10" />
-
-            <!-- Здесь будет отображаться поле ввода -->
-            <children>
-                <fx:reference source="inputField" />
-            </children>
         </VBox>
 
     </VBox>

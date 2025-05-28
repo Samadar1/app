@@ -79,11 +79,13 @@
                                 <TableColumn text="Отвественный" fx:id="userNameClose"/>
                             </columns>
                         </TableView>
-
-
                     </VBox>
                 </VBox>
             </ScrollPane>
+        </Tab>
+
+        <Tab text="Код"  closable="false" fx:id="codeTab">
+            <Label text="Код проекта" styleClass="section-title"/>
         </Tab>
 
         <Tab text="Настройки" closable="false" fx:id="setting">
