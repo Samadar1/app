@@ -17,18 +17,85 @@
 
     <VBox spacing="10" style="-fx-padding: 10;">
         <VBox spacing="10" style="-fx-padding: 10;">
-            <Label text="" styleClass="section-title" fx:id="labelNameTask"/>
+            <Label text="Подробная информация о задаче" styleClass="section-title" />
+        </VBox>
+
+        <VBox>
+            <Label fx:id="labelNameTask"
+                   text="Название задачи"
+                   prefWidth="10"
+                   maxWidth="350"
+                   style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;"/>
+
+            <TextField fx:id="textFieldNameTask"
+                       visible="false"
+                       managed="false"
+                       style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;"/>
+
+            <HBox>
+                <Button text="Изменить"
+                        onAction="#onNameEditButtonClick"
+                        styleClass="form-button, form-button-danger"
+                        fx:id="nameButtonEdit"/>
+
+                <Button text="Сохранить"
+                        onAction="#onNameSaveButtonClick"
+                        styleClass="form-button, form-button-success"
+                        fx:id="nameSaveButton"
+                        visible="false"/>
+
+                <Button text="Отмена"
+                        onAction="#onNameCancelEdit"
+                        styleClass="form-button"
+                        fx:id="nameCancelButtonEdit"
+                        visible="false"/>
+            </HBox>
         </VBox>
 
         <VBox>
             <Label text="Описание задачи" styleClass="section-title"/>
         </VBox>
 
-        <StackPane style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;" prefWidth="200">
-            <Label fx:id="description" wrapText="true" style="-fx-padding: 5 10;"/>
-        </StackPane>
+        <VBox fx:id="textContainer" spacing="5" alignment="CENTER_LEFT">
+            <!-- Label (по умолчанию виден) -->
+            <Label fx:id="description"
+                   text="Начальный текст"
+                   wrapText="true"
+                   prefWidth="350"
+                   maxHeight="Infinity"
+                   style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;" />
+
+            <!-- TextField (по умолчанию скрыт) -->
+            <TextArea fx:id="editField"
+                      visible="false"
+                      managed="false"
+                      wrapText="true"
+                      prefWidth="350"
+                      maxWidth="350"
+                      maxHeight="Infinity"
+                      style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;"/>
+            <HBox>
+                <Button text="Изменить"
+                        onAction="#onDescriptionEditButtonClick"
+                        styleClass="form-button, form-button-danger"
+                        fx:id="descriptionButtonEdit"/>
+
+                <Button text="Сохранить"
+                        onAction="#onDescriptionSaveButtonClick"
+                        styleClass="form-button, form-button-success"
+                        fx:id="descriptionSaveButton"
+                        disable="true"
+                        visible="false"/>
+
+                <Button text="Отмена"
+                        onAction="#onDescriptionCancelEdit"
+                        styleClass="form-button"
+                        fx:id="descriptionCancelButtonEdit"
+                        visible="false"/>
+            </HBox>
+        </VBox>
+
         <HBox>
-            <Button text="Сохранить" styleClass="form-button, form-button-success" onAction="#clickedOnSaveTask"/>
             <Button text="Удалить" styleClass="form-button,  form-button-danger" onAction="#clickedOnDelTask"/>
             <Button text="Вернуться" styleClass="form-button" onAction="#clickedOnBack"/>
         </HBox>

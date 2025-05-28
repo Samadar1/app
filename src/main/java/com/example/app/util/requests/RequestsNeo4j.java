@@ -482,4 +482,40 @@ public class    RequestsNeo4j {
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
+    public static void taskChangeTitle(long taskId, long issuerId, String title) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("taskId", taskId);
+        rootNode.put("issuerId", issuerId);
+        rootNode.put("newParam", title);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Task/changeTitle"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static void taskChangeContent(long taskId, long issuerId, String description) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("taskId", taskId);
+        rootNode.put("issuerId", issuerId);
+        rootNode.put("newParam", description);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Task/changeContent"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
 }
