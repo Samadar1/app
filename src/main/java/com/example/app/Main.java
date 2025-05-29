@@ -34,18 +34,18 @@ public class Main extends Application {
                 SessionManager.setEmail(Requests.getEmailByUserName(username));
 
                 Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/main_view.fxml")));
-                primaryStage.setTitle("JavaFX App");
+                primaryStage.setTitle("Horizon Code");
                 primaryStage.setScene(new Scene(root, 800, 600));
                 primaryStage.show();
             } else {
                 Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/auth.fxml")));
-                primaryStage.setTitle("JavaFX App");
+                primaryStage.setTitle("Horizon Code");
                 primaryStage.setScene(new Scene(root, 800, 600));
                 primaryStage.show();
             }
         } else {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/auth.fxml")));
-            primaryStage.setTitle("JavaFX App");
+            primaryStage.setTitle("Horizon Code");
             primaryStage.setScene(new Scene(root, 800, 600));
             primaryStage.show();
         }

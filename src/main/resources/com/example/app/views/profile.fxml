@@ -20,6 +20,4 @@
             <Label styleClass="form-label" fx:id="Email"/>
         </VBox>
     </VBox>
-
-
 </AnchorPane>

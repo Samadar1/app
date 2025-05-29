@@ -1,4 +1,5 @@
 package com.example.app.controllers;
+
 import com.example.app.util.Alerts;
 import com.example.app.util.requests.Requests;
 import com.example.app.util.requests.RequestsNeo4j;
@@ -16,19 +17,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class RegisterController {
-    @FXML
-    private TextField nameField;
+    @FXML private AnchorPane registerPane;
 
-    @FXML
-    private TextField emailField;
-
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private AnchorPane registerPane;
+    @FXML private TextField nameField;
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
 
     @FXML
     private void handleRegister() {
@@ -36,7 +32,6 @@ public class RegisterController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        // Валидация
         if (!validateInputs(name, email, password)) return;
 
         Task<String> registerTask = createRegisterTask(name, email, password);
@@ -89,7 +84,7 @@ public class RegisterController {
     private void loadMainView() {
         Platform.runLater(() -> {
             try {
-                Parent root = FXMLLoader.load(getClass().getResource("/com/example/app/views/main_view.fxml"));
+                Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/main_view.fxml")));
                 Stage stage = (Stage) registerPane.getScene().getWindow();
                 stage.getScene().setRoot(root);
             } catch (IOException ex) {
@@ -100,7 +95,7 @@ public class RegisterController {
 
     @FXML
     private void handleBackToLogin() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/app/views/auth.fxml"));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/auth.fxml")));
         Stage stage = (Stage) registerPane.getScene().getWindow();
         stage.getScene().setRoot(root);
     }

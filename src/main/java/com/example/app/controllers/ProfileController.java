@@ -16,7 +16,5 @@ public class ProfileController {
         Username.setText("Имя пользователя: " + SessionManager.getUsername());
         Email.setText("Email: " + SessionManager.getEmail());
     }
-
-
 }
 

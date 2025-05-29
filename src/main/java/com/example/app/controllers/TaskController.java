@@ -2,10 +2,10 @@ package com.example.app.controllers;
 
 import com.example.app.model.Project;
 import com.example.app.model.Task;
-
 import com.example.app.util.Alerts;
 import com.example.app.util.SessionManager;
 import com.example.app.util.requests.RequestsNeo4j;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,76 +18,36 @@ import java.util.List;
 import java.util.Objects;
 
 public class TaskController {
+    @FXML public AnchorPane taskPane;
 
-    @FXML
-    public AnchorPane taskPane;
+    @FXML public Label labelNameTask;
 
-    //Связанное с именнем
-    @FXML
-    public Label labelNameTask;
+    @FXML public Button nameButtonEdit;
+    @FXML public Button nameSaveButton;
+    @FXML public Button nameCancelButtonEdit;
+    @FXML public TextField textFieldNameTask;
 
-    @FXML
-    public Button nameButtonEdit;
+    @FXML public VBox textContainer;
+    @FXML public Button descriptionCancelButtonEdit;
+    @FXML public Button descriptionButtonEdit;
+    @FXML public Button descriptionSaveButton;
+    @FXML public Label description;
+    @FXML public TextArea editField;
 
-    @FXML
-    public Button nameSaveButton;
-
-    @FXML
-    public Button nameCancelButtonEdit;
-
-    @FXML
-    public TextField textFieldNameTask;
-
-    //Связанное с описанием
-    @FXML
-    public VBox textContainer;
-
-    @FXML
-    public Button descriptionCancelButtonEdit;
-
-    @FXML
-    public Button descriptionButtonEdit;
-
-    @FXML
-    public Button descriptionSaveButton;
-
-    @FXML
-    public Label description;
-
-    @FXML
-    public TextArea editField;
-
-
-    //Всё остальное
     private Task selectedTask;
-
     private String statusSelectedTask;
-
     private Project selectedProject;
 
-    @FXML
-    public VBox executeVBox;
+    @FXML public VBox executeVBox;
+    @FXML public Label executeName;
 
-    @FXML
-    public Label executeName;
+    @FXML public Label taskStatus;
 
-    @FXML
-    public Button takeTask;
-
-    @FXML
-    public Button assignTask;
-
-    @FXML
-    public Label taskStatus;
-
-    @FXML
-    public Button deleteTask;
-
-    @FXML
-    public Button finishTask;
-
-    @FXML
-    public Button dropTask;
+    @FXML public Button takeTask;
+    @FXML public Button assignTask;
+    @FXML public Button deleteTask;
+    @FXML public Button finishTask;
+    @FXML public Button dropTask;
 
     public void initialize() throws IOException, InterruptedException {
         selectedTask = ProjectDetailsController.getSelectedTask();
@@ -97,14 +57,11 @@ public class TaskController {
         renderPage();
     }
 
-    // Кнопки связанные с именнем
     @FXML
     public void onNameEditButtonClick(ActionEvent actionEvent) {
-        // Скрываем Label
         labelNameTask.setVisible(false);
         labelNameTask.setManaged(false);
 
-        // Показываем TextField и кнопку Сохранить
         textFieldNameTask.setText(selectedTask.getName());
         textFieldNameTask.setVisible(true);
         textFieldNameTask.setManaged(true);
@@ -126,24 +83,9 @@ public class TaskController {
         String name = textFieldNameTask.getText();
         if (!name.isEmpty()) {
             labelNameTask.setText("Название задачи: " + name);
-
             selectedTask.setName(name);
 
-            textFieldNameTask.setVisible(false);
-            textFieldNameTask.setManaged(false);
-
-            nameSaveButton.setVisible(false);
-            nameSaveButton.setManaged(false);
-
-            nameCancelButtonEdit.setVisible(false);
-            nameCancelButtonEdit.setManaged(false);
-
-            nameButtonEdit.setVisible(true);
-            nameButtonEdit.setManaged(true);
-
-            labelNameTask.setVisible(true);
-            labelNameTask.setManaged(true);
-
+            cancelEditName();
             RequestsNeo4j.taskChangeTitle(selectedTask.getId(), SessionManager.getUserId(), name);
         } else {
             Alerts.alert("Предупреждение", "Название задачи не может быть пустым", Alert.AlertType.ERROR);
@@ -152,6 +94,10 @@ public class TaskController {
 
     @FXML
     public void onNameCancelEdit(ActionEvent actionEvent) {
+        cancelEditName();
+    }
+
+    private void cancelEditName() {
         textFieldNameTask.setVisible(false);
         textFieldNameTask.setManaged(false);
 
@@ -168,20 +114,19 @@ public class TaskController {
         labelNameTask.setManaged(true);
     }
 
-    //Кнопки связаанные с описанием проекта
     @FXML
     public void onDescriptionEditButtonClick(ActionEvent actionEvent) {
-        // Скрываем Label
         description.setVisible(false);
         description.setManaged(false);
 
-        // Показываем TextField и кнопку Сохранить
         editField.setText(description.getText());
         editField.setVisible(true);
         editField.setManaged(true);
+
         descriptionSaveButton.setDisable(false);
         descriptionSaveButton.setVisible(true);
-        editField.requestFocus(); // фокус на поле ввода
+
+        editField.requestFocus();
 
         descriptionButtonEdit.setVisible(false);
         descriptionButtonEdit.setManaged(false);
@@ -200,10 +145,8 @@ public class TaskController {
             selectedTask.setDescription("");
             description.setText("У задачи нет описания");
         }
-
         RequestsNeo4j.taskChangeContent(selectedTask.getId(), SessionManager.getUserId(), newText);
 
-        // Возвращаем обратно Label
         editField.setVisible(false);
         editField.setManaged(false);
 
@@ -218,12 +161,12 @@ public class TaskController {
 
     @FXML
     public void onDescriptionCancelEdit(ActionEvent actionEvent) {
-        // Просто скрываем TextArea, не сохраняя изменения
         description.setVisible(true);
         description.setManaged(true);
 
         editField.setVisible(false);
         editField.setManaged(false);
+
         descriptionSaveButton.setDisable(true);
         descriptionSaveButton.setVisible(false);
 
@@ -231,9 +174,9 @@ public class TaskController {
         descriptionCancelButtonEdit.setVisible(false);
     }
 
-    //Остальные кнопки
     @FXML
     public void clickedOnDelTask(ActionEvent actionEvent) {
+        Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
     }
 
     @FXML
@@ -252,17 +195,23 @@ public class TaskController {
     @FXML
     public void onTakeTaskButtonClick(ActionEvent actionEvent) throws IOException, InterruptedException {
         RequestsNeo4j.setTaskMember(SessionManager.getUserId(), selectedTask.getId());
+
         Alerts.alert("Уведомление", "Задача успешно взята", Alert.AlertType.INFORMATION);
+
         statusSelectedTask = "IN PROGRESS";
         selectedTask.setMemberName(SessionManager.getUsername());
+
         renderPage();
     }
 
     @FXML
     public void onFinishTaskButtonClick(ActionEvent actionEvent) throws IOException, InterruptedException {
         RequestsNeo4j.closeTask(selectedTask.getId(), SessionManager.getUserId());
+
         Alerts.alert("Уведомление", "Задача успешно сдана", Alert.AlertType.INFORMATION);
+
         statusSelectedTask = "CLOSE";
+
         renderPage();
     }
 
@@ -287,7 +236,9 @@ public class TaskController {
         assignTask.setManaged(true);
 
         RequestsNeo4j.openTask(selectedTask.getId(), SessionManager.getUserId());
+
         Alerts.alert("Уведомление", "Вы отказались от задачи", Alert.AlertType.INFORMATION);
+
         renderPage();
     }
 
@@ -367,5 +318,4 @@ public class TaskController {
             executeName.setText("Задача выполнена: " + selectedTask.getMemberName());
         }
     }
-
 }

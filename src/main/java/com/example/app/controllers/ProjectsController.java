@@ -3,29 +3,22 @@ package com.example.app.controllers;
 import com.example.app.util.Alerts;
 import com.example.app.util.requests.RequestsNeo4j;
 import com.example.app.util.SessionManager;
+import com.example.app.model.Project;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import com.example.app.model.Project;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class ProjectsController {
-    @FXML
-    private GridPane projectGrid;
-
-    @FXML
-    private AnchorPane projectsPane;
-
-    @FXML
-    private TextField inputField;
+    @FXML private GridPane projectGrid;
+    @FXML private AnchorPane projectsPane;
 
     private static Project selectedProject;
 
@@ -39,19 +32,16 @@ public class ProjectsController {
         dialog.setTitle("Новый проект");
         dialog.setHeaderText("Введите название проекта");
 
-        // Кнопки
         ButtonType saveButtonType = new ButtonType("Сохранить", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButtonType = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
-        // Поле ввода
         TextField textField = new TextField();
         textField.setPromptText("Название проекта");
 
         VBox content = new VBox(10, textField);
         dialog.getDialogPane().setContent(content);
 
-        // Преобразование результата
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
                 return textField.getText();
@@ -59,7 +49,6 @@ public class ProjectsController {
             return null;
         });
 
-        // Показываем диалог и обрабатываем результат
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(projectName -> {

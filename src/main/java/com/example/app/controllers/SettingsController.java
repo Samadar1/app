@@ -19,18 +19,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class SettingsController{
-    @FXML
-    private AnchorPane settingsPane;
+    @FXML private AnchorPane settingsPane;
 
-    @FXML
-    private CheckComboBox<String> checkComboBox;
+    @FXML private CheckComboBox<String> checkComboBox;
 
-    // Метод initialize будет автоматически вызван FXMLLoader
     public void initialize() {
-        // Заполняем данными
         checkComboBox.getItems().addAll("Элемент 1", "Элемент 2", "Элемент 3", "Элемент 4", "Элемент 5");
 
-        // Слушатель на изменение выбранных элементов
         checkComboBox.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) change -> {
             int count = checkComboBox.getCheckModel().getCheckedItems().size();
             if (count == 0) {

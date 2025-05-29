@@ -29,6 +29,7 @@
                 <TextField fx:id="projectNameInputField" promptText="Введите новое название проекта: " styleClass="form-control"/>
             </VBox>
         </Tab>
+
         <Tab text="Команда" closable="false">
             <VBox spacing="10" style="-fx-padding: 10">
                 <VBox>

@@ -3,11 +3,11 @@ package com.example.app.controllers;
 import com.example.app.model.DTO.PersonDTO;
 import com.example.app.model.DTO.PersonTableDTO;
 import com.example.app.model.Project;
-
 import com.example.app.model.Task;
 import com.example.app.util.Alerts;
 import com.example.app.util.SessionManager;
 import com.example.app.util.requests.RequestsNeo4j;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,306 +26,73 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class ProjectDetailsController {
-    @FXML
-    public AnchorPane projectPane;
+    @FXML public AnchorPane projectPane;
 
-    @FXML
-    public TableView<PersonTableDTO> teamTableView;
+    @FXML public TableView<PersonTableDTO> teamTableView;
+    @FXML public TableColumn<PersonTableDTO, String>  usernameColum;
+    @FXML public TableColumn<PersonTableDTO, String>  roleColum;
 
-    @FXML
-    public TableColumn<PersonTableDTO, String>  usernameColum;
+    @FXML public ListView<Task> openTasks;
 
-    @FXML
-    public TableColumn<PersonTableDTO, String>  roleColum;
+    @FXML public TableView<Task> taskInProgressTableView;
+    @FXML public TableColumn<Task , String> taskNameInProgress;
+    @FXML public TableColumn<Task , String> userNameInProgress;
 
-    @FXML
-    public Button addMembers;
+    @FXML public TableView<Task> taskClosedTableView;
+    @FXML public TableColumn<Task , String> taskNameClose;
+    @FXML public TableColumn<Task , String> userNameClose;
 
-    @FXML
-    public Button createTask;
+    @FXML public Button addMembers;
+    @FXML public Button createTask;
 
-    @FXML
-    public Button getTask;
+    @FXML public Tab setting;
+    @FXML public TabPane tabPane;
 
-    @FXML
-    public Button delTask;
-
-    @FXML
-    public Tab setting;
-
-    @FXML
-    public TabPane tabPane;
-
-    @FXML
-    public ListView<Task> openTasks;
-
-    @FXML
-    public TableView<Task> taskInProgressTableView;
-
-    @FXML
-    public TableColumn<Task , String> taskNameInProgress;
-
-    @FXML
-    public TableColumn<Task , String> userNameInProgress;
-
-    @FXML
-    public TableView<Task> taskClosedTableView;
-
-    @FXML
-    public TableColumn<Task , String> taskNameClose;
-
-    @FXML
-    public TableColumn<Task , String> userNameClose;
-
-    @FXML
-    private Label projectName;
-
-    @FXML
-    private TextField projectNameInputField;
+    @FXML private Label projectName;
+    @FXML private TextField projectNameInputField;
 
     private Project selectedProject;
     private static Task selectedTask;
     private static String statusSelectedTask;
 
+    private final ContextMenu contextMenuTeam = new ContextMenu();
+    private final MenuItem upRolePerson = new MenuItem("Повысить пользователя");
+    private final MenuItem downRolePerson = new MenuItem("Понизить пользователя");
+    private final MenuItem delPerson = new MenuItem("Удалить пользователя");
+
+    private final ContextMenu contextMenuOpenTask = new ContextMenu();
+    private final MenuItem setMember = new MenuItem("Назначить исполнителя");
+    private final MenuItem takeTask = new MenuItem("Взять задачу");
+    private final MenuItem deleteTask = new MenuItem("Удалить");
+
+    private final ContextMenu contextMenuInProgressTask = new ContextMenu();
+    private final MenuItem closeTask = new MenuItem("Сдать задачу");
+    private final MenuItem dropTask = new MenuItem("Отказаться от задачи");
+
     public void initialize() throws IOException, InterruptedException {
         selectedProject = ProjectsController.getSelectedProject();
+        List<Long> personIds = RequestsNeo4j.getProjectById(selectedProject.getId());
+        
         projectName.setText(selectedProject.getName());
         projectNameInputField.setText(selectedProject.getName());
 
-        usernameColum.setCellValueFactory(new PropertyValueFactory<>("name"));
-        roleColum.setCellValueFactory(new PropertyValueFactory<>("role"));
-
-        usernameColum.setResizable(false);
-        roleColum.setResizable(false);
-
-        taskNameInProgress.setCellValueFactory(new PropertyValueFactory<>("name"));
-        userNameInProgress.setCellValueFactory(new PropertyValueFactory<>("memberName"));
-
-        taskNameInProgress.setResizable(false);
-        userNameInProgress.setResizable(false);
-
-        taskNameClose.setCellValueFactory(new PropertyValueFactory<>("name"));
-        userNameClose.setCellValueFactory(new PropertyValueFactory<>("memberName"));
-
-        ContextMenu contextMenu = new ContextMenu();
-
-        MenuItem upRolePerson = new MenuItem("Повысить пользователя");
-        MenuItem downRolePerson = new MenuItem("Понизить пользователя");
-        MenuItem delPerson = new MenuItem("Удалить пользователя");
-
-        contextMenu.getItems().addAll(upRolePerson, downRolePerson, delPerson);
-
-
-        List<Long> personIds = RequestsNeo4j.getProjectById(selectedProject.getId());
         if (!personIds.contains(SessionManager.getUserId())) {
             addMembers.setVisible(false);
             tabPane.getTabs().remove(setting);
             createTask.setVisible(false);
         }
 
-        if (personIds.contains(SessionManager.getUserId())) {
-            teamTableView.setRowFactory(tv -> {
-                TableRow<PersonTableDTO> row = new TableRow<>();
-                row.setOnMouseClicked(event -> {
-                    if (!row.isEmpty()) {
-                        PersonTableDTO rowData = row.getItem();
-                        String name = rowData.getName();
-                        String role = rowData.getRole();
-                        if (event.getButton() == MouseButton.SECONDARY && !Objects.equals(name, SessionManager.getUsername())) {
-                            upRolePerson.setOnAction(e -> {
-                                try {
-                                    RequestsNeo4j.upRolePersonInProject(selectedProject.getId(), RequestsNeo4j.getPersonIdByUserName(name));
-                                } catch (IOException | InterruptedException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                                try {
-                                    renderMembers(selectedProject.getId());
-                                } catch (IOException | InterruptedException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            });
+        setupTeamCellFactory(personIds);
 
-                            downRolePerson.setOnAction(e -> {
-                                try {
-                                    RequestsNeo4j.downRolePersonInProject(selectedProject.getId(), RequestsNeo4j.getPersonIdByUserName(name));
-                                } catch (IOException | InterruptedException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                                try {
-                                    renderMembers(selectedProject.getId());
-                                } catch (IOException | InterruptedException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            });
+        setupOpenTaskCellFactory();
+        setupOpenTaskClickHandlers(personIds);
 
-                            delPerson.setOnAction(event1 -> {
-                                long nodeId;
-                                try {
-                                    nodeId = RequestsNeo4j.getPersonIdByUserName(name);
-                                } catch (IOException | InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
+        setupInProgressTaskClickHandlers(personIds);
 
-                                int statusCode;
-
-                                try {
-                                    statusCode = RequestsNeo4j.deleteMembersInProject(selectedProject.getId(), nodeId, SessionManager.getUserId());
-                                } catch (IOException | InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                                if (statusCode == 200) {
-                                    Alerts.alert("Уведомление", "Пользователь успешно удалён", Alert.AlertType.INFORMATION);
-                                } else {
-                                    Alerts.alert("Уведомление", "У вас нет прав что бы удалить данного пользователя", Alert.AlertType.INFORMATION);
-                                }
-
-                                try {
-                                    renderMembers(selectedProject.getId());
-                                } catch (IOException | InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                            contextMenu.show(teamTableView, event.getScreenX(), event.getScreenY());
-                        }
-                    }
-                });
-                return row;
-            });
-        }
+        setupCloseTaskCellFactory();
 
         renderMembers(selectedProject.getId());
-
-        ContextMenu contextMenu2 = new ContextMenu();
-
-        MenuItem setMember = new MenuItem("Назначить исполнителя");
-        MenuItem takeTask = new MenuItem("Взять задачу");
-        MenuItem deleteTask = new MenuItem("Удалить");
-
-        contextMenu2.getItems().addAll(setMember, takeTask, deleteTask);
-
-        renderTasksListView(selectedProject.getId());
-
-        openTasks.setCellFactory(lv -> new ListCell<>(){
-            @Override
-            protected void updateItem(Task task, boolean empty) {
-                super.updateItem(task, empty);
-                if (empty || task == null) {
-                    setText(null);
-                    setOnMouseClicked(null);
-                } else {
-                    setText(task.getName());
-                    setOnMouseClicked(event -> {
-                        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                            selectedTask = getItem();
-                            statusSelectedTask = "OPEN";
-                            renderTaskPane(selectedTask);
-                        }
-                        if (event.getButton() == MouseButton.SECONDARY && !isEmpty()) {
-
-                            // Получаем текущий объект Task
-                            selectedTask = getItem();
-
-                            // Обновляем действия контекстного меню
-                            setMember.setOnAction(e -> {
-
-                            });
-
-                            takeTask.setOnAction(e -> {
-                                try {
-                                    RequestsNeo4j.setTaskMember(SessionManager.getUserId(), selectedTask.getId());
-                                    renderTasksListView(selectedProject.getId());
-                                    renderInProgressTasksTableView(selectedProject.getId());
-                                } catch (IOException | InterruptedException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            });
-                            deleteTask.setOnAction(e -> {
-
-                            });
-
-                            if (personIds.contains(SessionManager.getUserId())){
-                                contextMenu2.show(openTasks, event.getScreenX(), event.getScreenY());
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-        ContextMenu contextMenu3 = new ContextMenu();
-        MenuItem closeTask = new MenuItem("Сдать задачу");
-        MenuItem dropTask = new MenuItem("Отказаться от задачи");
-        contextMenu3.getItems().addAll(closeTask, dropTask, deleteTask);
-
-
-
-        taskInProgressTableView.setRowFactory(tv -> {
-            TableRow<Task> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (!row.isEmpty()) {
-                    Task rowData = row.getItem();
-                    String name = rowData.getName();
-
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        selectedTask = rowData;
-                        statusSelectedTask = "IN PROGRESS";
-                        renderTaskPane(selectedTask);
-                    }
-
-                    if (event.getButton() == MouseButton.SECONDARY) {
-                        closeTask.setOnAction(e ->{
-                            try {
-                                RequestsNeo4j.closeTask(rowData.getId(), SessionManager.getUserId());
-                                renderInProgressTasksTableView(selectedProject.getId());
-                                renderCloseTasksTableView(selectedProject.getId());
-                                Alerts.alert("Закрытие задачи", "Задача успешно сдана", Alert.AlertType.INFORMATION);
-                            } catch (IOException | InterruptedException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        });
-                        deleteTask.setOnAction(e -> {
-
-                        });
-                        dropTask.setOnAction(e -> {
-                            if (Objects.equals(rowData.getMemberName(), SessionManager.getUsername())){
-                                try {
-                                    RequestsNeo4j.openTask(rowData.getId(), SessionManager.getUserId());
-                                    renderTasksListView(selectedProject.getId());
-                                    renderInProgressTasksTableView(selectedProject.getId());
-                                    Alerts.alert("Уведомление", "Вы отказались от задачи", Alert.AlertType.INFORMATION);
-                                } catch (IOException | InterruptedException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            } else {
-                                Alerts.alert("Уведомление", "Вы не являетесь исполнителем задачи", Alert.AlertType.INFORMATION);
-                            }
-                        });
-                        contextMenu3.show(taskInProgressTableView, event.getScreenX(), event.getScreenY());
-                    }
-                }
-            });
-            return row;
-        });
-
-
-        taskClosedTableView.setRowFactory(tv -> {
-            TableRow<Task> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (!row.isEmpty()) {
-                    Task rowData = row.getItem();
-                    String name = rowData.getName();
-
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        selectedTask = rowData;
-                        statusSelectedTask = "CLOSE";
-                        renderTaskPane(selectedTask);
-                    }
-                }
-            });
-            return row;
-        });
-
+        renderOpenTasksListView(selectedProject.getId());
         renderCloseTasksTableView(selectedProject.getId());
         renderInProgressTasksTableView(selectedProject.getId());
     }
@@ -345,7 +112,6 @@ public class ProjectDetailsController {
 
     @FXML
     public void clickedOnAddMember(ActionEvent actionEvent) {
-
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Добавление участника");
         dialog.setHeaderText("Введите имя пользователя");
@@ -362,7 +128,6 @@ public class ProjectDetailsController {
         VBox content = new VBox(10, textField);
         dialog.getDialogPane().setContent(content);
 
-        // Преобразование результата
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
                 return textField.getText();
@@ -370,7 +135,6 @@ public class ProjectDetailsController {
             return null;
         });
 
-        // Показываем диалог и обрабатываем результат
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(memberName -> {
@@ -388,7 +152,7 @@ public class ProjectDetailsController {
                     throw new RuntimeException(e);
                 }
             } else {
-                showAlert("error 404", "пользователь не найден");
+                Alerts.alert("Уведомление", "Пользователь не найден", Alert.AlertType.INFORMATION);
             }
 
             try {
@@ -401,12 +165,12 @@ public class ProjectDetailsController {
 
     @FXML
     public void clickedOnDelProject(ActionEvent actionEvent) {
-        showAlert("Test", "clickedOnDelProject");
+        Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
     }
 
     @FXML
     public void clickedOnSaveProject(ActionEvent actionEvent) {
-        showAlert("Test", "clickedOnSaveProject");
+        Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
     }
 
     @FXML
@@ -415,22 +179,18 @@ public class ProjectDetailsController {
         dialog.setTitle("Добавление задачи");
         dialog.setHeaderText("Введите название и описание задачи");
 
-        // Кнопки
         ButtonType saveButtonType = new ButtonType("Добавить", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButtonType = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
-        // Поле ввода
         TextField textFieldName = new TextField();
         textFieldName.setPromptText("Название задачи");
         TextField textFieldDescription = new TextField();
         textFieldDescription.setPromptText("Описание задачи");
 
-
         VBox content = new VBox(10, textFieldName, textFieldDescription);
         dialog.getDialogPane().setContent(content);
 
-        // Преобразование результата
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
                 List<String> task= new ArrayList<>();
@@ -441,7 +201,6 @@ public class ProjectDetailsController {
             return null;
         });
 
-        // Показываем диалог и обрабатываем результат
         Optional<List<String>> result = dialog.showAndWait();
 
         result.ifPresent(task -> {
@@ -449,7 +208,7 @@ public class ProjectDetailsController {
                 long taskId = RequestsNeo4j.createTask(task.get(0),task.get(1));
                 if (taskId != -1) {
                     RequestsNeo4j.connectTaskToProject(selectedProject.getId(), taskId);
-                    renderTasksListView(selectedProject.getId());
+                    renderOpenTasksListView(selectedProject.getId());
                     Alerts.alert("Добавление задачи", "задача добавленна", Alert.AlertType.INFORMATION);
                 }
             } catch (IOException | InterruptedException e) {
@@ -458,21 +217,13 @@ public class ProjectDetailsController {
         });
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     private void renderMembers(long projectId) throws IOException, InterruptedException {
         List<PersonDTO> members = RequestsNeo4j.getAllMembersInProjectByProjectId(projectId);
         List<Long> personIds = RequestsNeo4j.getProjectById(projectId);
         List<PersonTableDTO> memberTableDTOs = new ArrayList<>();
 
         for (PersonDTO member : members) {
-            if (personIds.get(0) == member.getId()) {
+            if (Objects.equals(personIds.get(0), member.getId())) {
                 memberTableDTOs.add(new PersonTableDTO(member.getName(), "Создатель"));
             } else if (personIds.contains(member.getId())) {
                 memberTableDTOs.add(new PersonTableDTO(member.getName(), "Админ"));
@@ -486,7 +237,7 @@ public class ProjectDetailsController {
         teamTableView.setItems(observableList);
     }
 
-    private void renderTasksListView(long projectId) throws IOException, InterruptedException {
+    private void renderOpenTasksListView(long projectId) throws IOException, InterruptedException {
         openTasks.getItems().clear();
         List<Task> tasks = RequestsNeo4j.getAllOpenTasksByProjectId(projectId);
         if (tasks != null) {
@@ -498,8 +249,8 @@ public class ProjectDetailsController {
         List<Task> tasks = RequestsNeo4j.getAllInProgressTasksByProjectId(projectId);
         taskInProgressTableView.getItems().clear();
         if (tasks != null) {
-            ObservableList<Task> tasklist = FXCollections.observableArrayList(tasks);
-            taskInProgressTableView.setItems(tasklist);
+            ObservableList<Task> taskList = FXCollections.observableArrayList(tasks);
+            taskInProgressTableView.setItems(taskList);
         }
     }
     
@@ -507,8 +258,8 @@ public class ProjectDetailsController {
         List<Task> tasks = RequestsNeo4j.getAllClosedTasksByProjectId(projectId);
         taskClosedTableView.getItems().clear();
         if (tasks != null) {
-            ObservableList<Task> tasklist = FXCollections.observableArrayList(tasks);
-            taskClosedTableView.setItems(tasklist);
+            ObservableList<Task> taskList = FXCollections.observableArrayList(tasks);
+            taskClosedTableView.setItems(taskList);
         }
     }
 
@@ -531,5 +282,279 @@ public class ProjectDetailsController {
 
     public static String getStatusSelectedTask() {
         return statusSelectedTask;
+    }
+
+
+    /*
+    ##################################################
+    ###         Методы контексного меню            ###
+    ##################################################
+    */
+
+    //////------contextMenuTeam------//////
+
+    private void upRolePerson(String name) throws IOException, InterruptedException {
+        RequestsNeo4j.upRolePersonInProject(selectedProject.getId(), RequestsNeo4j.getPersonIdByUserName(name));
+        renderMembers(selectedProject.getId());
+    }
+
+    private void downRolePerson(String name) throws IOException, InterruptedException {
+        RequestsNeo4j.downRolePersonInProject(selectedProject.getId(), RequestsNeo4j.getPersonIdByUserName(name));
+        renderMembers(selectedProject.getId());
+    }
+
+    private void delPersonInProject(String name) throws IOException, InterruptedException {
+        long nodeId = RequestsNeo4j.getPersonIdByUserName(name);
+        int statusCode = RequestsNeo4j.deleteMembersInProject(selectedProject.getId(), nodeId, SessionManager.getUserId());
+
+        if (statusCode != 200) {
+            Alerts.alert("Уведомление", "У вас нет прав что бы удалить данного пользователя", Alert.AlertType.INFORMATION);
+        }
+
+        Alerts.alert("Уведомление", "Пользователь успешно удалён", Alert.AlertType.INFORMATION);
+        renderMembers(selectedProject.getId());
+    }
+
+    //////------contextMenuOpenTask------//////
+
+    private void takeTask() throws IOException, InterruptedException {
+            RequestsNeo4j.setTaskMember(SessionManager.getUserId(), selectedTask.getId());
+            renderOpenTasksListView(selectedProject.getId());
+            renderInProgressTasksTableView(selectedProject.getId());
+    }
+
+    private void setMember() throws IOException, InterruptedException {
+        Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
+    }
+
+    private void deleteTask() throws IOException, InterruptedException {
+        Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
+    }
+    
+    //////------contextMenuInProgressTask------//////
+    
+    private void dropTask(Task task) throws IOException, InterruptedException {
+        if (Objects.equals(task.getMemberName(), SessionManager.getUsername())){
+            RequestsNeo4j.openTask(task.getId(), SessionManager.getUserId());
+            renderOpenTasksListView(selectedProject.getId());
+            renderInProgressTasksTableView(selectedProject.getId());
+            Alerts.alert("Уведомление", "Вы отказались от задачи", Alert.AlertType.INFORMATION);
+        } else {
+            Alerts.alert("Уведомление", "Вы не являетесь исполнителем задачи", Alert.AlertType.INFORMATION);
+        }
+    }
+    
+    private void closeTask(Task task) throws IOException, InterruptedException {
+        if (Objects.equals(task.getMemberName(), SessionManager.getUsername())){
+            RequestsNeo4j.closeTask(task.getId(), SessionManager.getUserId());
+            renderInProgressTasksTableView(selectedProject.getId());
+            renderCloseTasksTableView(selectedProject.getId());
+            Alerts.alert("Уведомление", "Задача успешно сдана", Alert.AlertType.INFORMATION);
+        } else {
+            Alerts.alert("Уведомление", "Вы не являетесь исполнителем задачи", Alert.AlertType.INFORMATION);
+        }
+    }
+    
+    /*
+    ##################################################
+    ###         Отображение таблиц                 ###
+    ##################################################
+   */
+
+    //////------TeamTableView------//////
+
+    private void setupTeamCellFactory(List<Long> personIds) {
+        usernameColum.setCellValueFactory(new PropertyValueFactory<>("name"));
+        roleColum.setCellValueFactory(new PropertyValueFactory<>("role"));
+
+        usernameColum.setResizable(false);
+        roleColum.setResizable(false);
+
+        contextMenuTeam.getItems().addAll(upRolePerson, downRolePerson, delPerson);
+
+        teamTableView.setRowFactory(tv -> {
+            TableRow<PersonTableDTO> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    PersonTableDTO rowData = row.getItem();
+                    String name = rowData.getName();
+
+                    if (event.getButton() == MouseButton.SECONDARY && !Objects.equals(name, SessionManager.getUsername())) {
+                        upRolePerson.setOnAction(e -> {
+                            try {
+                                upRolePerson(name);
+                            } catch (IOException | InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+
+                        downRolePerson.setOnAction(e -> {
+                            try {
+                                downRolePerson(name);
+                            } catch (IOException | InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+
+                        delPerson.setOnAction(e -> {
+                            try {
+                                delPersonInProject(name);
+                            } catch (IOException | InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+                        if (personIds.contains(SessionManager.getUserId())) {
+                            contextMenuTeam.show(teamTableView, event.getScreenX(), event.getScreenY());
+                        }
+                    }
+                }
+            });
+            return row;
+        });
+    }
+
+    //////------OpenTaskListView------//////
+    
+    private void setupOpenTaskCellFactory() {
+        openTasks.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Task task, boolean empty) {
+                super.updateItem(task, empty);
+                if (empty || task == null) {
+                    setText(null);
+                } else {
+                    setText(task.getName());
+                }
+            }
+        });
+    }
+
+    private void setupOpenTaskClickHandlers(List<Long> personIds) {
+        if (personIds.contains(SessionManager.getUserId())){
+            contextMenuOpenTask.getItems().addAll(setMember, takeTask, deleteTask);
+        } else {
+            contextMenuOpenTask.getItems().addAll(takeTask);
+        }
+
+        openTasks.setOnMouseClicked(event -> {
+            Task selected = openTasks.getSelectionModel().getSelectedItem();
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                if (selected != null) {
+                    selectedTask = selected;
+                    statusSelectedTask = "OPEN";
+                    renderTaskPane(selectedTask);
+                }
+            }
+
+            if (event.getButton() == MouseButton.SECONDARY && openTasks.getSelectionModel().getSelectedItem() != null) {
+                selectedTask = selected;
+
+                setMember.setOnAction(e -> {
+                    try {
+                        setMember();
+                    } catch (IOException | InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
+
+                takeTask.setOnAction(e -> {
+                    try {
+                        takeTask();
+                    } catch (IOException | InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
+
+                deleteTask.setOnAction(e -> {
+                    try {
+                        deleteTask();
+                    } catch (IOException | InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
+                contextMenuOpenTask.show(openTasks, event.getScreenX(), event.getScreenY());
+            }
+        });
+    }
+
+    //////------InProgressTaskTableView------//////
+    
+    private void setupInProgressTaskClickHandlers(List<Long> personIds) {
+        if (personIds.contains(SessionManager.getUserId())){
+            contextMenuInProgressTask.getItems().addAll(closeTask, dropTask, deleteTask);
+        } else {
+            contextMenuInProgressTask.getItems().addAll(dropTask, closeTask);
+        }
+
+        taskNameInProgress.setCellValueFactory(new PropertyValueFactory<>("name"));
+        userNameInProgress.setCellValueFactory(new PropertyValueFactory<>("memberName"));
+        taskNameInProgress.setResizable(false);
+        userNameInProgress.setResizable(false);
+
+        taskInProgressTableView.setRowFactory(tv -> {
+            TableRow<Task> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    Task rowData = row.getItem();
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        selectedTask = rowData;
+                        statusSelectedTask = "IN PROGRESS";
+                        renderTaskPane(selectedTask);
+                    }
+
+                    if (event.getButton() == MouseButton.SECONDARY) {
+                        closeTask.setOnAction(e ->{
+                            try {
+                                closeTask(rowData);
+                            } catch (IOException | InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+                        
+                        deleteTask.setOnAction(e -> {
+                            try {
+                                deleteTask();
+                            } catch (IOException | InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+                        
+                        dropTask.setOnAction(e -> {
+                            try {
+                                dropTask(rowData);
+                            } catch (IOException | InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+                        contextMenuInProgressTask.show(taskInProgressTableView, event.getScreenX(), event.getScreenY());
+                    }
+                }
+            });
+            return row;
+        });
+    }
+
+    //////------CloseTaskTableView------//////
+
+    private void setupCloseTaskCellFactory() {
+        taskNameClose.setCellValueFactory(new PropertyValueFactory<>("name"));
+        userNameClose.setCellValueFactory(new PropertyValueFactory<>("memberName"));
+        taskNameClose.setResizable(false);
+        taskNameClose.setResizable(false);
+
+        taskClosedTableView.setRowFactory(tv -> {
+            TableRow<Task> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    Task rowData = row.getItem();
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        selectedTask = rowData;
+                        statusSelectedTask = "CLOSE";
+                        renderTaskPane(selectedTask);
+                    }
+                }
+            });
+            return row;
+        });
     }
 }
