@@ -154,7 +154,6 @@ public class    RequestsNeo4j {
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
-
     /**
      * @param projectId
      * @return

@@ -85,6 +85,7 @@ public class ProjectDetailsController {
 
     private Project selectedProject;
     private static Task selectedTask;
+    private static String statusSelectedTask;
 
     public void initialize() throws IOException, InterruptedException {
         selectedProject = ProjectsController.getSelectedProject();
@@ -185,12 +186,10 @@ public class ProjectDetailsController {
                                     throw new RuntimeException(e);
                                 }
                             });
-
                             contextMenu.show(teamTableView, event.getScreenX(), event.getScreenY());
                         }
                     }
                 });
-
                 return row;
             });
         }
@@ -219,6 +218,7 @@ public class ProjectDetailsController {
                     setOnMouseClicked(event -> {
                         if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                             selectedTask = getItem();
+                            statusSelectedTask = "OPEN";
                             renderTaskPane(selectedTask);
                         }
                         if (event.getButton() == MouseButton.SECONDARY && !isEmpty()) {
@@ -266,6 +266,13 @@ public class ProjectDetailsController {
                 if (!row.isEmpty()) {
                     Task rowData = row.getItem();
                     String name = rowData.getName();
+
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        selectedTask = rowData;
+                        statusSelectedTask = "IN PROGRESS";
+                        renderTaskPane(selectedTask);
+                    }
+
                     if (event.getButton() == MouseButton.SECONDARY) {
                         closeTask.setOnAction(e ->{
                             try {
@@ -283,6 +290,25 @@ public class ProjectDetailsController {
             });
             return row;
         });
+
+
+        taskClosedTableView.setRowFactory(tv -> {
+            TableRow<Task> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    Task rowData = row.getItem();
+                    String name = rowData.getName();
+
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        selectedTask = rowData;
+                        statusSelectedTask = "CLOSE";
+                        renderTaskPane(selectedTask);
+                    }
+                }
+            });
+            return row;
+        });
+
         renderCloseTasksTableView(selectedProject.getId());
         renderInProgressTasksTableView(selectedProject.getId());
     }
@@ -482,5 +508,9 @@ public class ProjectDetailsController {
 
     public static Task getSelectedTask() {
         return selectedTask;
+    }
+
+    public static String getStatusSelectedTask() {
+        return statusSelectedTask;
     }
 }

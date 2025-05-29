@@ -21,6 +21,15 @@
         </VBox>
 
         <VBox>
+            <Label fx:id="taskStatus"
+                   styleClass="section-title"/>
+        </VBox>
+
+        <VBox fx:id="executeVBox" spacing="10" style="-fx-padding: 10;" visible="false" managed="false">
+            <Label fx:id="executeName"/>
+        </VBox>
+
+        <VBox>
             <Label fx:id="labelNameTask"
                    text="Название задачи"
                    prefWidth="10"
@@ -74,6 +83,7 @@
                       maxWidth="350"
                       maxHeight="Infinity"
                       style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;"/>
+
             <HBox>
                 <Button text="Изменить"
                         onAction="#onDescriptionEditButtonClick"
@@ -95,9 +105,27 @@
             </HBox>
         </VBox>
 
-        <HBox>
-            <Button text="Удалить" styleClass="form-button,  form-button-danger" onAction="#clickedOnDelTask"/>
-            <Button text="Вернуться" styleClass="form-button" onAction="#clickedOnBack"/>
-        </HBox>
+        <VBox>
+            <HBox>
+                <Button text="Удалить"
+                        styleClass="form-button,  form-button-danger"
+                        onAction="#clickedOnDelTask"
+                        fx:id="deleteTask"/>
+
+                <Button text="Вернуться"
+                        styleClass="form-button"
+                        onAction="#clickedOnBack"/>
+            </HBox>
+
+            <HBox>
+                <Button text="Взять задачу"
+                        styleClass="form-button"
+                        fx:id="takeTask"/>
+
+                <Button text="Назначить исполнителя"
+                        styleClass="form-button"
+                        fx:id="assignTask"/>
+            </HBox>
+        </VBox>
     </VBox>
 </AnchorPane>
