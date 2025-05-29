@@ -559,6 +559,31 @@ public class RequestsNeo4j {
         return (String) user.get("name");
     }
 
+
+    /**
+     * Отвязывание задачи от пользователя и меняет её статус на OPEN
+     * @param taskId
+     * @param issuerId
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void openTask(long taskId, long issuerId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("taskId", taskId);
+        rootNode.put("issuerId", issuerId);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Task/open"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
     /**
      * Закрывает задачу по её id и id того, кто закрывает
      * @param taskId id закрываемой задачи

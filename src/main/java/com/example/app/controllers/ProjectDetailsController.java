@@ -284,6 +284,23 @@ public class ProjectDetailsController {
                                 throw new RuntimeException(ex);
                             }
                         });
+                        deleteTask.setOnAction(e -> {
+
+                        });
+                        dropTask.setOnAction(e -> {
+                            if (Objects.equals(rowData.getMemberName(), SessionManager.getUsername())){
+                                try {
+                                    RequestsNeo4j.openTask(rowData.getId(), SessionManager.getUserId());
+                                    renderTasksListView(selectedProject.getId());
+                                    renderInProgressTasksTableView(selectedProject.getId());
+                                    Alerts.alert("Уведомление", "Вы отказались от задачи", Alert.AlertType.INFORMATION);
+                                } catch (IOException | InterruptedException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            } else {
+                                Alerts.alert("Уведомление", "Вы не являетесь исполнителем задачи", Alert.AlertType.INFORMATION);
+                            }
+                        });
                         contextMenu3.show(taskInProgressTableView, event.getScreenX(), event.getScreenY());
                     }
                 }
@@ -479,6 +496,7 @@ public class ProjectDetailsController {
 
     private void renderInProgressTasksTableView(long projectId) throws IOException, InterruptedException {
         List<Task> tasks = RequestsNeo4j.getAllInProgressTasksByProjectId(projectId);
+        taskInProgressTableView.getItems().clear();
         if (tasks != null) {
             ObservableList<Task> tasklist = FXCollections.observableArrayList(tasks);
             taskInProgressTableView.setItems(tasklist);
@@ -487,6 +505,7 @@ public class ProjectDetailsController {
     
     private void renderCloseTasksTableView(long projectId) throws IOException, InterruptedException {
         List<Task> tasks = RequestsNeo4j.getAllClosedTasksByProjectId(projectId);
+        taskClosedTableView.getItems().clear();
         if (tasks != null) {
             ObservableList<Task> tasklist = FXCollections.observableArrayList(tasks);
             taskClosedTableView.setItems(tasklist);
