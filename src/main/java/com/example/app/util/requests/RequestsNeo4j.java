@@ -3,7 +3,6 @@ package com.example.app.util.requests;
 import com.example.app.model.DTO.PersonDTO;
 import com.example.app.model.Project;
 import com.example.app.model.Task;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -463,6 +462,23 @@ public class    RequestsNeo4j {
 
         Map<String, Object> user = userList.get(0);
         return (String) user.get("name");
+    }
+
+    public static void openTask(long taskId, long issuerId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("taskId", taskId);
+        rootNode.put("issuerId", issuerId);
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Task/open"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     public static void closeTask(long taskId, long issuerId) throws IOException, InterruptedException {

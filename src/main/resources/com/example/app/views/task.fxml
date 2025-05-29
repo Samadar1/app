@@ -120,11 +120,25 @@
             <HBox>
                 <Button text="Взять задачу"
                         styleClass="form-button"
+                        onAction="#onTakeTaskButtonClick"
                         fx:id="takeTask"/>
 
                 <Button text="Назначить исполнителя"
                         styleClass="form-button"
                         fx:id="assignTask"/>
+
+
+                <Button text="Сдать задачу"
+                        styleClass="form-button"
+                        onAction="#onFinishTaskButtonClick"
+                        visible="false"
+                        fx:id="finishTask"/>
+
+                <Button text="Отказаться от задачи"
+                        styleClass="form-button"
+                        onAction="#onDropTaskButtonClick"
+                        visible="false"
+                        fx:id="dropTask"/>
             </HBox>
         </VBox>
     </VBox>

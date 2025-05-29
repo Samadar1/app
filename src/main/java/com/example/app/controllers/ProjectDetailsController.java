@@ -284,6 +284,17 @@ public class ProjectDetailsController {
                                 throw new RuntimeException(ex);
                             }
                         });
+                        deleteTask.setOnAction(e -> {
+
+                        });
+                        dropTask.setOnAction(e -> {
+                            try {
+                                RequestsNeo4j.openTask(selectedTask.getId(), SessionManager.getUserId());
+                            } catch (IOException | InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            Alerts.alert("Уведомление", "Вы отказались от задачи", Alert.AlertType.INFORMATION);
+                        });
                         contextMenu3.show(taskInProgressTableView, event.getScreenX(), event.getScreenY());
                     }
                 }

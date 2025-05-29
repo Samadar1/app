@@ -57,9 +57,12 @@ public class TaskController {
     @FXML
     public TextArea editField;
 
+
     //Всё остальное
     private Task selectedTask;
+
     private String statusSelectedTask;
+
     private Project selectedProject;
 
     @FXML
@@ -80,62 +83,18 @@ public class TaskController {
     @FXML
     public Button deleteTask;
 
+    @FXML
+    public Button finishTask;
+
+    @FXML
+    public Button dropTask;
+
     public void initialize() throws IOException, InterruptedException {
         selectedTask = ProjectDetailsController.getSelectedTask();
         statusSelectedTask = ProjectDetailsController.getStatusSelectedTask();
         selectedProject = ProjectsController.getSelectedProject();
 
-        taskStatus.setText("Статус задачи " + statusSelectedTask);
-        labelNameTask.setText("Название задачи: " + selectedTask.getName());
-
-        if (!Objects.equals(selectedTask.getDescription(), "")) {
-            description.setText(selectedTask.getDescription());
-        } else {
-            description.setText("У задачи нет описания");
-        }
-
-        List<Long> personIds = RequestsNeo4j.getProjectById(selectedProject.getId());
-        if (!personIds.contains(SessionManager.getUserId())) {
-            //убираем кнопку удалить задачу
-            deleteTask.setVisible(false);
-            deleteTask.setManaged(false);
-
-            //убираем кнопки изменить задачу
-            nameButtonEdit.setVisible(false);
-            nameButtonEdit.setManaged(false);
-
-            descriptionButtonEdit.setVisible(false);
-            descriptionButtonEdit.setManaged(false);
-
-            assignTask.setVisible(false);
-            assignTask.setManaged(false);
-        }
-
-        if (Objects.equals(statusSelectedTask, "IN PROGRESS")) {
-            takeTask.setVisible(false);
-            takeTask.setManaged(false);
-
-            assignTask.setVisible(false);
-            assignTask.setManaged(false);
-
-            executeVBox.setVisible(true);
-            executeVBox.setManaged(true);
-
-            executeName.setText("Исполнитель задачи: " + selectedTask.getMemberName());
-        }
-
-        if (Objects.equals(statusSelectedTask, "CLOSE")) {
-            takeTask.setVisible(false);
-            takeTask.setManaged(false);
-
-            assignTask.setVisible(false);
-            assignTask.setManaged(false);
-
-            executeVBox.setVisible(true);
-            executeVBox.setManaged(true);
-
-            executeName.setText("Исполнитель задачи: " + selectedTask.getMemberName());
-        }
+        renderPage();
     }
 
     // Кнопки связанные с именнем
@@ -289,4 +248,124 @@ public class TaskController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    public void onTakeTaskButtonClick(ActionEvent actionEvent) throws IOException, InterruptedException {
+        RequestsNeo4j.setTaskMember(SessionManager.getUserId(), selectedTask.getId());
+        Alerts.alert("Уведомление", "Задача успешно взята", Alert.AlertType.INFORMATION);
+        statusSelectedTask = "IN PROGRESS";
+        selectedTask.setMemberName(SessionManager.getUsername());
+        renderPage();
+    }
+
+    @FXML
+    public void onFinishTaskButtonClick(ActionEvent actionEvent) throws IOException, InterruptedException {
+        RequestsNeo4j.closeTask(selectedTask.getId(), SessionManager.getUserId());
+        Alerts.alert("Уведомление", "Задача успешно сдана", Alert.AlertType.INFORMATION);
+        statusSelectedTask = "CLOSE";
+        renderPage();
+    }
+
+    @FXML
+    public void onDropTaskButtonClick(ActionEvent actionEvent) throws IOException, InterruptedException {
+        statusSelectedTask = "OPEN";
+        selectedTask.setMemberName(null);
+
+        executeVBox.setManaged(false);
+        executeVBox.setVisible(false);
+
+        dropTask.setVisible(false);
+        dropTask.setManaged(false);
+
+        finishTask.setVisible(false);
+        finishTask.setManaged(false);
+
+        takeTask.setVisible(true);
+        takeTask.setManaged(true);
+
+        assignTask.setVisible(true);
+        assignTask.setManaged(true);
+
+        RequestsNeo4j.openTask(selectedTask.getId(), SessionManager.getUserId());
+        Alerts.alert("Уведомление", "Вы отказались от задачи", Alert.AlertType.INFORMATION);
+        renderPage();
+    }
+
+    private void renderPage() throws IOException, InterruptedException {
+        taskStatus.setText("Статус задачи " + statusSelectedTask);
+        labelNameTask.setText("Название задачи: " + selectedTask.getName());
+
+        if (!Objects.equals(selectedTask.getDescription(), "")) {
+            description.setText(selectedTask.getDescription());
+        } else {
+            description.setText("У задачи нет описания");
+        }
+
+        List<Long> personIds = RequestsNeo4j.getProjectById(selectedProject.getId());
+        if (!personIds.contains(SessionManager.getUserId())) {
+            //убираем кнопку удалить задачу
+            deleteTask.setVisible(false);
+            deleteTask.setManaged(false);
+
+            //убираем кнопки изменить задачу
+            nameButtonEdit.setVisible(false);
+            nameButtonEdit.setManaged(false);
+
+            descriptionButtonEdit.setVisible(false);
+            descriptionButtonEdit.setManaged(false);
+
+            assignTask.setVisible(false);
+            assignTask.setManaged(false);
+        }
+
+        if (Objects.equals(statusSelectedTask, "IN PROGRESS")) {
+            takeTask.setVisible(false);
+            takeTask.setManaged(false);
+
+            assignTask.setVisible(false);
+            assignTask.setManaged(false);
+
+            executeVBox.setVisible(true);
+            executeVBox.setManaged(true);
+
+            deleteTask.setVisible(true);
+            deleteTask.setManaged(true);
+
+            if (Objects.equals(selectedTask.getMemberName(), SessionManager.getUsername())) {
+                dropTask.setVisible(true);
+                dropTask.setManaged(true);
+
+                finishTask.setVisible(true);
+                finishTask.setManaged(true);
+            }
+
+            executeName.setText("Исполнитель задачи: " + selectedTask.getMemberName());
+        }
+
+        if (Objects.equals(statusSelectedTask, "CLOSE")) {
+            takeTask.setVisible(false);
+            takeTask.setManaged(false);
+
+            assignTask.setVisible(false);
+            assignTask.setManaged(false);
+
+            executeVBox.setVisible(true);
+            executeVBox.setManaged(true);
+
+            nameButtonEdit.setVisible(false);
+            nameButtonEdit.setManaged(false);
+
+            descriptionButtonEdit.setVisible(false);
+            descriptionButtonEdit.setManaged(false);
+
+            dropTask.setVisible(false);
+            dropTask.setManaged(false);
+
+            finishTask.setVisible(false);
+            finishTask.setManaged(false);
+
+            executeName.setText("Задача выполнена: " + selectedTask.getMemberName());
+        }
+    }
+
 }
