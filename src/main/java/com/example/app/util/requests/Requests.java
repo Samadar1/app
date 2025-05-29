@@ -12,8 +12,10 @@ public class Requests {
     private static final HttpClient client = HttpClient.newHttpClient();
 
     /**
+     * Сверяет JWT и возвращает имя пользователя
+     * если статус код не 200, возвращает null
      * @param token
-     * @return
+     * @return <code>username</code> или <code>null</code>
      * @throws IOException
      * @throws InterruptedException
      */
