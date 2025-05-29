@@ -11,6 +11,12 @@ import java.net.http.HttpResponse;
 public class Requests {
     private static final HttpClient client = HttpClient.newHttpClient();
 
+    /**
+     * @param token
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static String checkJWT(String token) throws IOException, InterruptedException {
         String json = String.format(
                 "{\"token\":\"%s\"}",
