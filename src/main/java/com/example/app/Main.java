@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -34,21 +35,19 @@ public class Main extends Application {
                 SessionManager.setEmail(Requests.getEmailByUserName(username));
 
                 Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/main_view.fxml")));
-                primaryStage.setTitle("Horizon Code");
                 primaryStage.setScene(new Scene(root, 800, 600));
-                primaryStage.show();
-            } else {
-                Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/auth.fxml")));
-                primaryStage.setTitle("Horizon Code");
-                primaryStage.setScene(new Scene(root, 800, 600));
-                primaryStage.show();
             }
+
         } else {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/auth.fxml")));
-            primaryStage.setTitle("Horizon Code");
             primaryStage.setScene(new Scene(root, 800, 600));
-            primaryStage.show();
         }
+
+        Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/favicon.png")));
+
+        primaryStage.setTitle("Horizon Code");
+        primaryStage.getIcons().add(icon);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
