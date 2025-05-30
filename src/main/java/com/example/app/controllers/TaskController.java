@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class TaskController {
     @FXML public AnchorPane taskPane;
@@ -176,8 +177,27 @@ public class TaskController {
     }
 
     @FXML
-    public void clickedOnDelTask(ActionEvent actionEvent) {
-        Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
+    public void clickedOnDelTask(ActionEvent actionEvent) throws IOException, InterruptedException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтвердите действие");
+        alert.setHeaderText("Вы точно хотите удалить задачу?");
+        alert.setContentText("Это действие нельзя отменить.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            RequestsNeo4j.deleteTask(SessionManager.getUserId(), selectedTask.getId());
+            Alerts.alert("Оповешение", "Задача была удалена" , Alert.AlertType.INFORMATION);
+
+            try {
+                // Используем FXMLLoader для загрузки FXML и получения контроллера
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/app/views/project.fxml"));
+                AnchorPane newView = loader.load();
+                taskPane.getChildren().setAll(newView);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML

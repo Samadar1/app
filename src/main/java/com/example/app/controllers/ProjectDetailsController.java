@@ -63,11 +63,12 @@ public class ProjectDetailsController {
     private final ContextMenu contextMenuOpenTask = new ContextMenu();
     private final MenuItem setMember = new MenuItem("Назначить исполнителя");
     private final MenuItem takeTask = new MenuItem("Взять задачу");
-    private final MenuItem deleteTask = new MenuItem("Удалить");
+    private final MenuItem deleteOpenTask = new MenuItem("Удалить");
 
     private final ContextMenu contextMenuInProgressTask = new ContextMenu();
     private final MenuItem closeTask = new MenuItem("Сдать задачу");
     private final MenuItem dropTask = new MenuItem("Отказаться от задачи");
+    private final MenuItem deleteTask = new MenuItem("Удалить");
 
     public void initialize() throws IOException, InterruptedException {
         selectedProject = ProjectsController.getSelectedProject();
@@ -327,8 +328,21 @@ public class ProjectDetailsController {
         Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
     }
 
-    private void deleteTask() throws IOException, InterruptedException {
-        Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
+    private void deleteTask(Task task) throws IOException, InterruptedException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтвердите действие");
+        alert.setHeaderText("Вы точно хотите удалить задачу?");
+        alert.setContentText("Это действие нельзя отменить.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            RequestsNeo4j.deleteTask(SessionManager.getUserId(), task.getId());
+            Alerts.alert("Оповешение", "Задача была удалена" , Alert.AlertType.INFORMATION);
+
+            renderOpenTasksListView(selectedProject.getId());
+            renderInProgressTasksTableView(selectedProject.getId());
+            renderCloseTasksTableView(selectedProject.getId());
+        }
     }
     
     //////------contextMenuInProgressTask------//////
@@ -431,7 +445,7 @@ public class ProjectDetailsController {
 
     private void setupOpenTaskClickHandlers(List<Long> personIds) {
         if (personIds.contains(SessionManager.getUserId())){
-            contextMenuOpenTask.getItems().addAll(setMember, takeTask, deleteTask);
+            contextMenuOpenTask.getItems().addAll(setMember, takeTask, deleteOpenTask);
         } else {
             contextMenuOpenTask.getItems().addAll(takeTask);
         }
@@ -465,9 +479,9 @@ public class ProjectDetailsController {
                     }
                 });
 
-                deleteTask.setOnAction(e -> {
+                deleteOpenTask.setOnAction(e -> {
                     try {
-                        deleteTask();
+                        deleteTask(selectedTask);
                     } catch (IOException | InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -513,7 +527,7 @@ public class ProjectDetailsController {
                         
                         deleteTask.setOnAction(e -> {
                             try {
-                                deleteTask();
+                                deleteTask(rowData);
                             } catch (IOException | InterruptedException ex) {
                                 throw new RuntimeException(ex);
                             }

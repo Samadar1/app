@@ -653,4 +653,22 @@ public class RequestsNeo4j {
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
+    public static void deleteTask(long personId, long taskId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        rootNode.put("personId", personId);
+        rootNode.put("taskId", taskId);
+
+        String json = mapper.writeValueAsString(rootNode);
+
+        HttpRequest requestToCreate = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Task/delete"))
+                .header("Content-Type", "application/json")
+                .method("DELETE", HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
+    }
 }
