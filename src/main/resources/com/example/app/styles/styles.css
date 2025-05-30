@@ -1,12 +1,12 @@
 .form-label {
-    -fx-text-fill: #333333;
+    -fx-text-fill: #051026;
     -fx-font-weight: bold;
 }
 
 /* FORM BUTTONS */
 
 .form-button {
-    -fx-background-color: #6c757d;
+    -fx-background-color: #051026;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-radius: 10;
@@ -15,7 +15,8 @@
 }
 
 .form-button:hover {
-    -fx-background-color: #5a6268;
+    -fx-background-color: #446EA6;
+    -fx-cursor: hand;
 }
 
 .form-button-secondary {
@@ -51,12 +52,13 @@
 
 .link-button:hover {
     -fx-text-fill: #1976D2;
+    -fx-cursor: hand;
 }
 
 .title-label {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-text-fill: #333333;
+    -fx-text-fill: #051026;
 }
 
 .button-group {
@@ -69,7 +71,7 @@
 }
 
 .project-scroll-pane {
-    -fx-background-color: #fff;
+    -fx-background-color: transparent;
     -fx-hbar-policy: NEVER;
     -fx-vbar-policy: NEVER;
     -fx-background: transparent;

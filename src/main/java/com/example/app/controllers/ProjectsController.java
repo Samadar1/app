@@ -78,15 +78,15 @@ public class ProjectsController {
         for (Project project : projects) {
             // Создаем контейнер для карточки
             VBox card = new VBox(10);
-            card.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-border-color: #ccc;");
+            card.setStyle("-fx-background-color: #365073; -fx-padding: 15; -fx-background-radius: 10;");
             card.setMinSize(200, 100);
             card.setMaxSize(200, 100);
 
             Label label = new Label(project.getName());
-            label.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill:#000;");
+            label.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill:#F1FCFF;");
 
             Label labelRole = new Label();
-            labelRole.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill:#000;");
+            labelRole.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill:#F1FCFF;");
 
             List<Long> PersonIds = new ArrayList<>();
             PersonIds = RequestsNeo4j.getProjectById(project.getId());
@@ -107,7 +107,7 @@ public class ProjectsController {
             projectGrid.add(card, col, row);
 
             col++;
-            if (col == 2) {
+            if (col == 5) {
                 col = 0;
                 row++;
             }

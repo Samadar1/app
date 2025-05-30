@@ -1,10 +1,16 @@
 .root {
+    -fx-background-color: #F1FCFF;
+    -fx-text-fill: #051026;
     -fx-font-family: "Segoe UI";
-    -fx-background-color: #f0f0f0;
+}
+
+.anchor-pane {
+    -fx-pref-width: 1080;
 }
 
 .side-panel {
-    -fx-background-color: #2d2d30;
+    -fx-background-color: #051026;
+    -fx-text-fill: #F1FCFF;
     -fx-padding: 10;
 }
 
@@ -16,7 +22,8 @@
 }
 
 .side-panel > .button:hover {
-    -fx-background-color: #3c3c3c;
+    -fx-background-color: #446EA6;
+    -fx-cursor: hand;
 }
 
 .content-area {

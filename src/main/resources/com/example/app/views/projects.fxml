@@ -8,20 +8,20 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.app.controllers.ProjectsController"
             fx:id="projectsPane"
-            >
+            styleClass="anchor-pane">
 
     <stylesheets>
         <URL value="@../styles/main.css"/>
         <URL value="@../styles/styles.css"/>
     </stylesheets>
 
-    <VBox spacing="10" style="-fx-padding: 10;">
+    <VBox spacing="10" style="-fx-padding: 10; -fx-hgrow: always; -fx-max-width: Infinity;">
         <VBox spacing="10" style="-fx-padding: 10;">
             <Label text="Мои проекты" styleClass="section-title"/>
         </VBox>
 
-        <ScrollPane prefWidth="450" prefHeight="400" styleClass="project-scroll-pane">
-            <GridPane fx:id="projectGrid" hgap="35" vgap="20" styleClass="project-scroll-pane">
+        <ScrollPane prefWidth="1060" prefHeight="400" styleClass="project-scroll-pane">
+            <GridPane fx:id="projectGrid" hgap="12" vgap="12" styleClass="project-scroll-pane">
             </GridPane>
         </ScrollPane>
 

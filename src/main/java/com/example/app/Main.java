@@ -35,18 +35,19 @@ public class Main extends Application {
                 SessionManager.setEmail(Requests.getEmailByUserName(username));
 
                 Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/main_view.fxml")));
-                primaryStage.setScene(new Scene(root, 800, 600));
+                primaryStage.setScene(new Scene(root, 1280, 720));
             }
 
         } else {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/app/views/auth.fxml")));
-            primaryStage.setScene(new Scene(root, 800, 600));
+            primaryStage.setScene(new Scene(root, 1280, 720));
         }
 
         Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/favicon.png")));
 
         primaryStage.setTitle("Horizon Code");
         primaryStage.getIcons().add(icon);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

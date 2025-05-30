@@ -20,6 +20,6 @@
     </left>
 
     <center>
-        <AnchorPane fx:id="contentArea" styleClass="content-area"/>
+        <AnchorPane fx:id="contentArea" styleClass="root"/>
     </center>
 </BorderPane>

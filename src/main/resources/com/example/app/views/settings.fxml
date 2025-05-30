@@ -7,7 +7,9 @@
 <AnchorPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.app.controllers.SettingsController"
-            fx:id="settingsPane">
+            fx:id="settingsPane"
+            styleClass="">
+
     <stylesheets>
         <URL value="@../styles/main.css"/>
         <URL value="@../styles/styles.css"/>

@@ -13,9 +13,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.app.controllers.RegisterController"
             fx:id="registerPane"
-            prefHeight="400"
-            prefWidth="600"
-            styleClass="root">
+            styleClass="">
 
     <stylesheets>
         <URL value="@../styles/main.css"/>
