@@ -11,6 +11,7 @@
     -fx-font-weight: bold;
     -fx-background-radius: 10;
     -fx-padding: 8 16;
+    -fx-margin: 10;
 }
 
 .form-button:hover {

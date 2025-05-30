@@ -16,20 +16,22 @@
     </stylesheets>
 
     <VBox spacing="10" style="-fx-padding: 10;">
-        <VBox spacing="10" style="-fx-padding: 10;">
+        <VBox>
             <Label text="Подробная информация о задаче" styleClass="section-title" />
         </VBox>
 
         <VBox>
-            <Label fx:id="taskStatus"
-                   styleClass="section-title"/>
+            <HBox>
+                <Label text="Статус задачи: " styleClass="section-title"/>
+                <Label fx:id="taskStatus" styleClass="section-title"/>
+            </HBox>
         </VBox>
 
         <VBox fx:id="executeVBox" spacing="10" style="-fx-padding: 10;" visible="false" managed="false">
             <Label fx:id="executeName"/>
         </VBox>
 
-        <VBox>
+        <VBox spacing="10">
             <Label fx:id="labelNameTask"
                    text="Название задачи"
                    prefWidth="10"
@@ -39,12 +41,14 @@
             <TextField fx:id="textFieldNameTask"
                        visible="false"
                        managed="false"
+                       prefWidth="10"
+                       maxWidth="350"
                        style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;"/>
 
-            <HBox>
+            <HBox spacing="10">
                 <Button text="Изменить"
                         onAction="#onNameEditButtonClick"
-                        styleClass="form-button, form-button-danger"
+                        styleClass="form-button, form-button-secondary"
                         fx:id="nameButtonEdit"/>
 
                 <Button text="Сохранить"
@@ -65,7 +69,7 @@
             <Label text="Описание задачи" styleClass="section-title"/>
         </VBox>
 
-        <VBox fx:id="textContainer" spacing="5" alignment="CENTER_LEFT">
+        <VBox fx:id="textContainer" spacing="10" alignment="CENTER_LEFT">
             <!-- Label (по умолчанию виден) -->
             <Label fx:id="description"
                    text="Начальный текст"
@@ -82,12 +86,13 @@
                       prefWidth="350"
                       maxWidth="350"
                       maxHeight="Infinity"
-                      style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20;"/>
+                      styleClass="text-area"
+                      style="-fx-background-color: #b0b7b0; -fx-background-radius: 15; -fx-padding: 10 20; -fx-control-inner-background: #b0b7b0;"/>
 
-            <HBox>
+            <HBox spacing="10">
                 <Button text="Изменить"
                         onAction="#onDescriptionEditButtonClick"
-                        styleClass="form-button, form-button-danger"
+                        styleClass="form-button, form-button-secondary"
                         fx:id="descriptionButtonEdit"/>
 
                 <Button text="Сохранить"
@@ -105,8 +110,8 @@
             </HBox>
         </VBox>
 
-        <VBox>
-            <HBox>
+        <VBox spacing="30">
+            <HBox spacing="10">
                 <Button text="Удалить"
                         styleClass="form-button,  form-button-danger"
                         onAction="#clickedOnDelTask"
@@ -117,14 +122,14 @@
                         onAction="#clickedOnBack"/>
             </HBox>
 
-            <HBox>
+            <HBox spacing="10">
                 <Button text="Взять задачу"
-                        styleClass="form-button"
+                        styleClass="form-button, form-button-secondary"
                         onAction="#onTakeTaskButtonClick"
                         fx:id="takeTask"/>
 
                 <Button text="Назначить исполнителя"
-                        styleClass="form-button"
+                        styleClass="form-button, form-button-secondary"
                         fx:id="assignTask"/>
 
 
