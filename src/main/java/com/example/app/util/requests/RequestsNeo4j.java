@@ -187,6 +187,7 @@ public class RequestsNeo4j {
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
     /**
      * Возвращает список всех участников проекта по id,
      * иначе {@code null}
@@ -558,7 +559,6 @@ public class RequestsNeo4j {
         Map<String, Object> user = userList.get(0);
         return (String) user.get("name");
     }
-
 
     /**
      * Отвязывание задачи от пользователя и меняет её статус на OPEN

@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.util.List;
@@ -243,8 +244,20 @@ public class TaskController {
     }
 
     private void renderPage() throws IOException, InterruptedException {
-        taskStatus.setText("Статус задачи " + statusSelectedTask);
+        taskStatus.setText(statusSelectedTask);
         labelNameTask.setText("Название задачи: " + selectedTask.getName());
+
+        switch (statusSelectedTask) {
+            case "OPEN":
+                taskStatus.setStyle("-fx-text-fill: #218838");
+                break;
+            case "IN PROGRESS":
+                taskStatus.setStyle("-fx-text-fill: #1976D2");
+                break;
+            default:
+                taskStatus.setStyle("-fx-text-fill: #c82333");
+                break;
+        }
 
         if (!Objects.equals(selectedTask.getDescription(), "")) {
             description.setText(selectedTask.getDescription());
