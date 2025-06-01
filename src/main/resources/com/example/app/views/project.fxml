@@ -57,7 +57,10 @@
                         <VBox spacing="15">
                             <Label text="Текущие зачадачи" styleClass="section-title"/>
                             <ListView fx:id="openTasks" prefWidth="325" prefHeight="500"/>
-                            <Button text="Добавить задачу" styleClass="form-button" onAction="#clickedOnCreateTask" fx:id="createTask"/>
+                            <HBox spacing="10">
+                                <Button text="Добавить задачу" styleClass="form-button" onAction="#clickedOnCreateTask" fx:id="createTask"/>
+                                <Button text="Распределить с ИИ" styleClass="form-button" onAction="#clickedOnTaskAI" fx:id="taskAI"/>
+                            </HBox>
                         </VBox>
 
                         <VBox spacing="15">

@@ -3,6 +3,7 @@ package com.example.app.util.requests;
 import com.example.app.model.DTO.PersonDTO;
 import com.example.app.model.Project;
 import com.example.app.model.Task;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -670,5 +671,107 @@ public class RequestsNeo4j {
                 .build();
 
         client.send(requestToCreate, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static void generateTask(long projectId) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+
+        // Массив задач
+        ArrayNode tasksArray = mapper.createArrayNode();
+        List<Task> tasks = getAllOpenTasksByProjectId(projectId);
+
+        for(Task task : tasks) {
+            ObjectNode task1 = mapper.createObjectNode();
+            task1.put("name", task.getName());
+            task1.put("description", task.getDescription());
+            tasksArray.add(task1);
+        }
+
+        ArrayNode usersArray = mapper.createArrayNode();
+        List<PersonDTO> members = getAllMembersInProjectByProjectId(projectId);
+        for (PersonDTO member : members) {
+            ObjectNode user1 = mapper.createObjectNode();
+            user1.put("name", member.getName());
+
+            ArrayNode skills1 = mapper.createArrayNode();;
+
+            List<String> skills = getUserSkillSetById(member.getId());
+
+            for (String skill : skills) {
+                skills1.add(skill);
+            }
+
+            user1.put("skill_set", skills1);
+            usersArray.add(user1);
+        }
+
+        rootNode.set("tasks", tasksArray);
+        rootNode.set("users", usersArray);
+
+        String jsonBody = mapper.writeValueAsString(rootNode);
+        System.out.println(jsonBody);
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:5000/api/task_assignment"))  // замени на свой URL
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        JsonNode rootNodeResp = mapper.readTree(response.body());
+        JsonNode assignmentsNode = rootNodeResp.get("assignments");
+
+        List<String> assignedUsers = new ArrayList<>();
+        List<String> taskNames = new ArrayList<>();
+
+        if (assignmentsNode != null && assignmentsNode.isArray()) {
+            for (JsonNode assignment : assignmentsNode) {
+                String user = assignment.get("assigned_user").asText();
+                String task = assignment.get("task_name").asText();
+
+                assignedUsers.add(user);
+                taskNames.add(task);
+            }
+        }
+
+        for (int i = 0; i < assignedUsers.size(); i++) {
+            long userID = getPersonIdByUserName(assignedUsers.get(i));
+            String temp_TaskName = taskNames.get(i);
+            long taskID = 0;
+            for (Task task : tasks) {
+                if (task.getName().equals(temp_TaskName)) {
+                    taskID = task.getId();
+                    break;
+                }
+            }
+            setTaskMember(userID, taskID);
+        }
+    }
+
+    public static List<String> getUserSkillSetById (long userId) throws IOException, InterruptedException {
+        HttpRequest requests = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/v1/Person/get-person/" + userId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(requests, HttpResponse.BodyHandlers.ofString());
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.body());
+        JsonNode skillSetNode = root.get("skillSet");
+
+        List<String> skillList = new ArrayList<>();
+        if (skillSetNode != null && skillSetNode.isArray()) {
+            for (JsonNode node : skillSetNode) {
+                skillList.add(node.asText());
+            }
+        }
+        System.out.println(skillList);
+        return skillList;
     }
 }

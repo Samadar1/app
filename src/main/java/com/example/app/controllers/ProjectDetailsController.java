@@ -44,6 +44,7 @@ public class ProjectDetailsController {
 
     @FXML public Button addMembers;
     @FXML public Button createTask;
+    @FXML public Button taskAI;
 
     @FXML public Tab setting;
     @FXML public TabPane tabPane;
@@ -81,6 +82,7 @@ public class ProjectDetailsController {
             addMembers.setVisible(false);
             tabPane.getTabs().remove(setting);
             createTask.setVisible(false);
+            taskAI.setVisible(false);
         }
 
         setupTeamCellFactory(personIds);
@@ -172,6 +174,14 @@ public class ProjectDetailsController {
     @FXML
     public void clickedOnSaveProject(ActionEvent actionEvent) {
         Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
+    }
+
+    @FXML
+    public void clickedOnTaskAI(ActionEvent actionEvent) throws IOException, InterruptedException {
+        RequestsNeo4j.generateTask(selectedProject.getId());
+
+        renderOpenTasksListView(selectedProject.getId());
+        renderInProgressTasksTableView(selectedProject.getId());
     }
 
     @FXML
@@ -325,7 +335,7 @@ public class ProjectDetailsController {
     }
 
     private void setMember() throws IOException, InterruptedException {
-        Alerts.alert("123", "123", Alert.AlertType.INFORMATION);
+
     }
 
     private void deleteTask(Task task) throws IOException, InterruptedException {
@@ -571,4 +581,6 @@ public class ProjectDetailsController {
             return row;
         });
     }
+
+
 }
